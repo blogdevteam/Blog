@@ -9,7 +9,7 @@ class User(models.Model):
 
     name = models.CharField(max_length = 40)
     nickname = models.CharField(max_length = 40)
-    password = models.CharField(max_length = 16)
+    password = models.CharField(max_length = 32)
     regist_time = models.DateTimeField()
     email = models.EmailField(null = True, blank = True)
     description = models.CharField(max_length = 100, null = True, blank = True)
@@ -82,7 +82,7 @@ class Admin(models.Model):
     # TODO: 在migration后，手动添加设置初始值的SQL代码 alter sequence admin_id restart with 10000
     admin_id = models.BigAutoField(primary_key = True)
 
-    password = models.CharField(max_length = 16)
+    password = models.CharField(max_length = 32)
 
     class Meta:
         db_table = 'Admin'
