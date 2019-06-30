@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link href="/static/css/Login.css" type="text/css" rel="stylesheet">
+<title>登陆界面</title>
+</head>
+
+<body background="/static/images/head.jpg">
+
+<div id="Login_box" opacity="0.9">
+    <h2 style="padding-top: 40px">欢迎登陆</h2>
+    <img id="head_img" src="/static/images/head.jpg">
+    <p>念念不忘，必有回响</p>
+    <form method = 'post' enctype="multipart/form-data">
+    {% csrf_token %}
+    {{uf.as_p}}
+    <input type="submit" value = "ok" />
+    </form>
+    <a onclick="change()"><img id ="view"  src="/static/images/e1.jpg"></a>
+    <p id="p1" onclick="alert('请尝试联系管理员找回密码！')">忘记密码？</p>
+    <button id="button1" onclick="Login()">登录</button>
+    <p>没有账户？<a href="http://127.0.0.1:8000/blogApp/regist">立即注册</a></p>
+</div>
+
+<script>
+    function Login(){
+        let user  = document.getElementById("user_name").value;
+        let pwd = document.getElementById("password").value;
+        if (user=="" || pwd==""){
+            alert("用户名或密码不能为空！");
+        }else{
+            $.ajax({
+                type: "GET",
+                url: "http://127.0.0.1:8000/Login",
+                data: {'user':user,'name':name},
+                dataType:'json',
+                success: function(data) {
+                    windows.open('BlogContent.html')
+                },
+            });
+            }
+    }
+</script>
+<script>
+        var isShow=true;
+        function change(){
+            var imgObj = document.getElementById("view");
+            var Flag=(imgObj.getAttribute("src",2)=="images/e1.jpg");
+            imgObj.src=Flag?"images/e2.jpg":"images/e1.jpg";
+            var v=document.getElementById("password");
+            if (isShow) {
+                v.type="text";
+                isShow=false;
+            }else{
+                v.type="password";
+                isShow=true;
+            }
+        }
+</script>
+</body>
+</html>
