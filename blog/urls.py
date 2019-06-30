@@ -19,12 +19,8 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from blogApp import views
 from blogApp import  urls
 from django.contrib import admin
-admin.autodiscover()
-
 
 urlpatterns=[
-    #path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
     path('', include('blogApp.urls')),
-    path('blogApp/', include('blogApp.urls')),
-    ]
-urlpatterns += staticfiles_urlpatterns()
+]

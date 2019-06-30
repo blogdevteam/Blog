@@ -1,11 +1,11 @@
-from blogApp.models import User
-from blogApp.models import Cookie
+from .models import *
 from django.template import RequestContext
 from django.shortcuts import render,render_to_response
 from django.http import HttpResponse,HttpResponseRedirect
 from django import forms
 from django.utils import timezone
 import random
+
 #表单
 class UserForm(forms.Form):
     username = forms.CharField(label='用户名',max_length=100)
@@ -16,6 +16,9 @@ class ReForm(forms.Form):
     password1 = forms.CharField(label='密码',widget=forms.PasswordInput())
     password2 = forms.CharField(label='确认密码', widget=forms.PasswordInput())
 
+
+def index(request):
+    return HttpResponse("Hello world")
 
 #注册
 def regist(req):
@@ -38,7 +41,7 @@ def regist(req):
             storepassword = hl.hexdigest()
 
             User.objects.create(name= username,password=storepassword,regist_time=time_now,nickname=username)
-            response=HttpResponseRedirect('/blogApp/index/')
+            response=HttpResponseRedirect('blogApp/BlogContent.html')
 
             auser = User.objects.filter(name__exact=username, password__exact=storepassword)
             loginuserid1 = auser.values_list('user_id', flat=True)
@@ -62,13 +65,9 @@ def regist(req):
 
             return response
 
-
-
-
     else:
         uf1 = ReForm()
-    return render(req, 'Register.html', {'uf1': uf1})
-
+    return render(req, 'blogApp/register.html', {'uf1': uf1})
 
 #登陆
 def login(req):
@@ -86,8 +85,8 @@ def login(req):
             auser = User.objects.filter(name__exact = username,password__exact = storepassword)
 
             if auser:
-                #比较成功，跳转index
-                response = HttpResponseRedirect('/blogApp/index/')
+                #比较成index
+                response = HttpResponseRedirect('/index')
                 #将username写入浏览器cookie,失效时间为3600
                 loginuserid1 = auser.values_list('user_id',flat=True)
                 loginuserid = loginuserid1[0]
@@ -109,17 +108,13 @@ def login(req):
                 cookie.cookie = salt
                 cookie.save()
 
-
                 return response
             else:
                 #比较失败，还在login
-                return HttpResponseRedirect('/blogApp/login/')
+                return HttpResponseRedirect('blogApp/login/')
     else:
         uf = UserForm()
-    return render(req,'Login.html',{'uf':uf})
-
-
-
+    return render(req,'blogApp/Login.html',{'uf':uf})
 
 #登陆成功
 
@@ -128,9 +123,7 @@ def index(req):
     result = Cookie.objects.filter(cookie__exact=useridsalt)
     userid1 = result.values_list('user',flat=True)
     userid =  userid1[0]
-    return render_to_response('BlogContent.html' ,{'username':userid})
-
-
+    return render_to_response('blogApp/BlogContent.html' ,{'username':userid})
 
 #退出
 def logout(req):
