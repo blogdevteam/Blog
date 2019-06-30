@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -7,152 +8,150 @@
     <link href="/static/css/footer.css" type="text/css" rel="stylesheet">
     <link href="/static/css/bootstrap.css" type="text/css" rel="stylesheet">
 </head>
+
 <body leftmargin="0" topmargin="0">
-<div>
-    <div id="top" style="width: 100%;height: 200px;">
-        <img src="/static/images/bg.jpg" width="100%" height="100%">
-    </div>
-    <div id="navigation_bar">
-        <ul id="list1">
-            <li><a href="">首页</a></li>
-            <li><a href="">新的</a></li>
-            <li><a href="">联系</a></li>
-            <li><a href="">管理</a></li>
-            <li id="search_box"><input id="keywords" type="search" placeholder="输入查询关键字"></li>
-            <li id="search_button"><button id="button1" onclick="Search()">查询</button></li>
-            <li id="currentTime"><p id="logInfo" style="margin-top: 0px"></p></li>
-        </ul>
-    </div>
-    <div style="overflow:hidden;">
-        <div id="body" style="overflow:hidden;">
-        <div id="left" style="width:68%;background-color: #FFFFFF;float: left;">
-            <h2 align="center" style="margin-bottom: 0px">{{password}}{{username}}</h2>
-            <div style="text-align: right">
-            <ul id="blog_title">
-                <li style="width: 150px;" ><p class="blog_intro" style="font-size: 12px">时间：2017-01-01</p></li>
-                <li style="width: 80px"><p class="blog_intro">浏览:23</li>
-            </ul>
-            </div>
-            <p>
-                看完公司的基于Netty的游戏框架,框架中用到了多态,函数式编程和事件驱动编程,第一次看到事件驱动的时候,就想到跟观察者模式很像.
-                事件驱动初上手感觉还很好用,在我自己写的项目里,要写很多爬虫,比如下面爬虫的例子,我只是想关心拼接URL地址,和关心不同的网站怎么
-                解析DOM元素,写一个回调就好多态,函数式编程和事件驱动编程,这三个还是然让我学到很多,可以用一个框架的基础,
-                比如在Netty中,继承SimpleChannelInboundHandler"TextWebSocketFrame",实现这里里面的方法,就能接收到请求,很方便.
-                看完公司的基于Netty的游戏框架,框架中用到了多态,函数式编程和事件驱动编程,第一次看到事件驱动的时候,就想到跟观察者模式很像.
-                事件驱动初上手感觉还很好用,在我自己写的项目里,要写很多爬虫,比如下面爬虫的例子,我只是想关心拼接URL地址,和关心不同的网站怎么
-                解析DOM元素,写一个回调就好多态,函数式编程和事件驱动编程,这三个还是然让我学到很多,可以用一个框架的基础,
-                比如在Netty中,继承SimpleChannelInboundHandler"TextWebSocketFrame",实现这里里面的方法,就能接收到请求,很方便.
-                看完公司的基于Netty的游戏框架,框架中用到了多态,函数式编程和事件驱动编程,第一次看到事件驱动的时候,就想到跟观察者模式很像.
-                事件驱动初上手感觉还很好用,在我自己写的项目里,要写很多爬虫,比如下面爬虫的例子,我只是想关心拼接URL地址,和关心不同的网站怎么
-                解析DOM元素,写一个回调就好多态,函数式编程和事件驱动编程,这三个还是然让我学到很多,可以用一个框架的基础,
-                比如在Netty中,继承SimpleChannelInboundHandler"TextWebSocketFrame",实现这里里面的方法,就能接收到请求,很方便.看完公司的基于Netty的游戏框架,框架中用到了多态,函数式编程和事件驱动编程,第一次看到事件驱动的时候,就想到跟观察者模式很像.
-                事件驱动初上手感觉还很好用,在我自己写的项目里,要写很多爬虫,比如下面爬虫的例子,我只是想关心拼接URL地址,和关心不同的网站怎么
-                解析DOM元素,写一个回调就好多态,函数式编程和事件驱动编程,这三个还是然让我学到很多,可以用一个框架的基础,
-                比如在Netty中,继承SimpleChannelInboundHandler"TextWebSocketFrame",实现这里里面的方法,就能接收到请求,很方便.
-                看完公司的基于Netty的游戏框架,框架中用到了多态,函数式编程和事件驱动编程,第一次看到事件驱动的时候,就想到跟观察者模式很像.
-                事件驱动初上手感觉还很好用,在我自己写的项目里,要写很多爬虫,比如下面爬虫的例子,我只是想关心拼接URL地址,和关心不同的网站怎么
-                解析DOM元素,写一个回调就好多态,函数式编程和事件驱动编程,这三个还是然让我学到很多,可以用一个框架的基础,
-                比如在Netty中,继承SimpleChannelInboundHandler"TextWebSocketFrame",实现这里里面的方法,就能接收到请求,很方便.
-                看完公司的基于Netty的游戏框架,框架中用到了多态,函数式编程和事件驱动编程,第一次看到事件驱动的时候,就想到跟观察者模式很像.
-                事件驱动初上手感觉还很好用,在我自己写的项目里,要写很多爬虫,比如下面爬虫的例子,我只是想关心拼接URL地址,和关心不同的网站怎么
-                解析DOM元素,写一个回调就好多态,函数式编程和事件驱动编程,这三个还是然让我学到很多,可以用一个框架的基础,
-                比如在Netty中,继承SimpleChannelInboundHandler"TextWebSocketFrame",实现这里里面的方法,就能接收到请求,很方便.
-                看完公司的基于Netty的游戏框架,框架中用到了多态,函数式编程和事件驱动编程,第一次看到事件驱动的时候,就想到跟观察者模式很像.
-                事件驱动初上手感觉还很好用,在我自己写的项目里,要写很多爬虫,比如下面爬虫的例子,我只是想关心拼接URL地址,和关心不同的网站怎么
-                解析DOM元素,写一个回调就好多态,函数式编程和事件驱动编程,这三个还是然让我学到很多,可以用一个框架的基础,
-                比如在Netty中,继承SimpleChannelInboundHandler"TextWebSocketFrame",实现这里里面的方法,就能接收到请求,很方便.
-            </p>
+    <div>
+        <div id="top" style="width: 100%;height: 200px;">
+            <img src="/static/images/bg.jpg" width="100%" height="100%">
         </div>
-        <div id="right" style="width:27%;background-color: #FFFFFF;float: right">
-            <div align="center" style="width:90%;height: 200px;margin: 10px auto;
+        <div id="navigation_bar">
+            <ul id="list1">
+                <li><a href="">首页</a></li>
+                <li><a href="">新的</a></li>
+                <li><a href="">联系</a></li>
+                <li><a href="">管理</a></li>
+                <li id="search_box"><input id="keywords" type="search" placeholder="输入查询关键字"></li>
+                <li id="search_button"><button id="button1" onclick="Search()">查询</button></li>
+                <li id="currentTime">
+                    <p id="logInfo" style="margin-top: 0px"></p>
+                </li>
+            </ul>
+        </div>
+        <div style="overflow:hidden;">
+            <div id="body" style="overflow:hidden;">
+                <div id="left" style="width:68%;background-color: #FFFFFF;float: left;">
+                    <h2 align="center" style="margin-bottom: 0px">{{password}}{{username}}</h2>
+                    <div style="text-align: right">
+                        <ul id="blog_title">
+                            <li style="width: 150px;">
+                                <p class="blog_intro" style="font-size: 12px">时间：2017-01-01</p>
+                            </li>
+                            <li style="width: 80px">
+                                <p class="blog_intro">浏览:23</li>
+                        </ul>
+                    </div>
+                    <p>
+                        看完公司的基于Netty的游戏框架,框架中用到了多态,函数式编程和事件驱动编程,第一次看到事件驱动的时候,就想到跟观察者模式很像. 事件驱动初上手感觉还很好用,在我自己写的项目里,要写很多爬虫,比如下面爬虫的例子,我只是想关心拼接URL地址,和关心不同的网站怎么 解析DOM元素,写一个回调就好多态,函数式编程和事件驱动编程,这三个还是然让我学到很多,可以用一个框架的基础, 比如在Netty中,继承SimpleChannelInboundHandler"TextWebSocketFrame",实现这里里面的方法,就能接收到请求,很方便.
+                        看完公司的基于Netty的游戏框架,框架中用到了多态,函数式编程和事件驱动编程,第一次看到事件驱动的时候,就想到跟观察者模式很像. 事件驱动初上手感觉还很好用,在我自己写的项目里,要写很多爬虫,比如下面爬虫的例子,我只是想关心拼接URL地址,和关心不同的网站怎么 解析DOM元素,写一个回调就好多态,函数式编程和事件驱动编程,这三个还是然让我学到很多,可以用一个框架的基础, 比如在Netty中,继承SimpleChannelInboundHandler"TextWebSocketFrame",实现这里里面的方法,就能接收到请求,很方便.
+                        看完公司的基于Netty的游戏框架,框架中用到了多态,函数式编程和事件驱动编程,第一次看到事件驱动的时候,就想到跟观察者模式很像. 事件驱动初上手感觉还很好用,在我自己写的项目里,要写很多爬虫,比如下面爬虫的例子,我只是想关心拼接URL地址,和关心不同的网站怎么 解析DOM元素,写一个回调就好多态,函数式编程和事件驱动编程,这三个还是然让我学到很多,可以用一个框架的基础, 比如在Netty中,继承SimpleChannelInboundHandler"TextWebSocketFrame",实现这里里面的方法,就能接收到请求,很方便.看完公司的基于Netty的游戏框架,框架中用到了多态,函数式编程和事件驱动编程,第一次看到事件驱动的时候,就想到跟观察者模式很像.
+                        事件驱动初上手感觉还很好用,在我自己写的项目里,要写很多爬虫,比如下面爬虫的例子,我只是想关心拼接URL地址,和关心不同的网站怎么 解析DOM元素,写一个回调就好多态,函数式编程和事件驱动编程,这三个还是然让我学到很多,可以用一个框架的基础, 比如在Netty中,继承SimpleChannelInboundHandler"TextWebSocketFrame",实现这里里面的方法,就能接收到请求,很方便. 看完公司的基于Netty的游戏框架,框架中用到了多态,函数式编程和事件驱动编程,第一次看到事件驱动的时候,就想到跟观察者模式很像.
+                        事件驱动初上手感觉还很好用,在我自己写的项目里,要写很多爬虫,比如下面爬虫的例子,我只是想关心拼接URL地址,和关心不同的网站怎么 解析DOM元素,写一个回调就好多态,函数式编程和事件驱动编程,这三个还是然让我学到很多,可以用一个框架的基础, 比如在Netty中,继承SimpleChannelInboundHandler"TextWebSocketFrame",实现这里里面的方法,就能接收到请求,很方便. 看完公司的基于Netty的游戏框架,框架中用到了多态,函数式编程和事件驱动编程,第一次看到事件驱动的时候,就想到跟观察者模式很像.
+                        事件驱动初上手感觉还很好用,在我自己写的项目里,要写很多爬虫,比如下面爬虫的例子,我只是想关心拼接URL地址,和关心不同的网站怎么 解析DOM元素,写一个回调就好多态,函数式编程和事件驱动编程,这三个还是然让我学到很多,可以用一个框架的基础, 比如在Netty中,继承SimpleChannelInboundHandler"TextWebSocketFrame",实现这里里面的方法,就能接收到请求,很方便. 看完公司的基于Netty的游戏框架,框架中用到了多态,函数式编程和事件驱动编程,第一次看到事件驱动的时候,就想到跟观察者模式很像.
+                        事件驱动初上手感觉还很好用,在我自己写的项目里,要写很多爬虫,比如下面爬虫的例子,我只是想关心拼接URL地址,和关心不同的网站怎么 解析DOM元素,写一个回调就好多态,函数式编程和事件驱动编程,这三个还是然让我学到很多,可以用一个框架的基础, 比如在Netty中,继承SimpleChannelInboundHandler"TextWebSocketFrame",实现这里里面的方法,就能接收到请求,很方便.
+                    </p>
+                </div>
+                <div id="right" style="width:27%;background-color: #FFFFFF;float: right">
+                    <div align="center" style="width:90%;height: 200px;margin: 10px auto;
 border:3px dashed #96c2f1;">
-                <img src="images/bg.jpg" style="width: 50px;height: 50px;border-radius: 25px;margin-top: 10px">
-                <div style="text-align: left">
-                    <ul style="list-style: none;margin-top: 20px">
-                        <li>昵称：hit_wh</li>
-                        <li>注册时间：2011-11-11</li>
-                        <li>粉丝：0</li>
-                        <li><a href>个人主页</a></li>
-                    </ul>
+                        <img src="static/images/bg.jpg" style="width: 50px;height: 50px;border-radius: 25px;margin-top: 10px">
+                        <div style="text-align: left">
+                            <ul style="list-style: none;margin-top: 20px">
+                                <li>昵称：hit_wh</li>
+                                <li>注册时间：2011-11-11</li>
+                                <li>粉丝：0</li>
+                                <li><a href>个人主页</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="type" style="width:90%;margin: 10px auto;background: #c8e5bc;">
+                        <ul style="list-style: none;padding-top: 5px;padding-left: 40px;border-left: 5px solid #eff7ff;border-top: 4px solid #9acfea;
+border-bottom: 3px solid #9acfea;border-right: 5px solid #eff7ff;">
+                            <li class="L1"><a href="">类型1</a></li>
+                            <li class="L1"><a href="">类型2</a></li>
+                            <li class="L1"><a href="">类型3</a></li>
+                            <li class="L1"><a href="">类型4</a></li>
+                            <li class="L1"><a href="">类型5</a></li>
+                            <li class="L1"><a href="">类型6</a></li>
+                        </ul>
+                    </div>
+                    <div id="label0" style="width:90%;margin: 10px auto;background: #c8e5bc;">
+                        <ul style="list-style: none;padding-top: 5px;padding-left: 40px;border-left: 5px solid #eff7ff;border-top: 4px solid #9acfea;
+border-bottom: 3px solid #9acfea;border-right: 5px solid #eff7ff;">
+                            <li class="L1"><a href="" class="link_a">自定义标签1</a></li>
+                            <li class="L1"><a href="">自定义标签1</a></li>
+                            <li class="L1"><a href="">自定义标签1</a></li>
+                            <li class="L1"><a href="">自定义标签1</a></li>
+                            <li class="L1"><a href="">自定义标签1</a></li>
+                            <li class="L1"><a href="">自定义标签1</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-            <div id="type" style="width:90%;margin: 10px auto;background: #c8e5bc;">
-                <ul style="list-style: none;padding-top: 5px;padding-left: 40px;border-left: 5px solid #eff7ff;border-top: 4px solid #9acfea;
-border-bottom: 3px solid #9acfea;border-right: 5px solid #eff7ff;">
-                    <li class="L1"><a href="">类型1</a></li>
-                    <li class="L1"><a href="">类型2</a></li>
-                    <li class="L1"><a href="">类型3</a></li>
-                    <li class="L1"><a href="">类型4</a></li>
-                    <li class="L1"><a href="">类型5</a></li>
-                    <li class="L1"><a href="">类型6</a></li>
-                </ul>
-            </div>
-            <div id="label0" style="width:90%;margin: 10px auto;background: #c8e5bc;">
-                <ul style="list-style: none;padding-top: 5px;padding-left: 40px;border-left: 5px solid #eff7ff;border-top: 4px solid #9acfea;
-border-bottom: 3px solid #9acfea;border-right: 5px solid #eff7ff;">
-                    <li class="L1"><a href="" class="link_a">自定义标签1</a></li>
-                    <li class="L1"><a href="">自定义标签1</a></li>
-                    <li class="L1"><a href="">自定义标签1</a></li>
-                    <li class="L1"><a href="">自定义标签1</a></li>
-                    <li class="L1"><a href="">自定义标签1</a></li>
-                    <li class="L1"><a href="">自定义标签1</a></li>
-                </ul>
+            <div style="width:68%">
+                <div id="comment_area" style="width:100%;height: 150px">
+                    <textarea style="width: 100%;height: 100%;list-style: none" placeholder="留下评论吧"></textarea>
+                </div>
+                <button class="btn btn-primary" type="submit" onclick="alert('评论成功！')" style="width:80px;float: right;margin-top: 5px;margin-bottom: 10px">提交</button>
             </div>
         </div>
+        <!-- footer -->
+        <div id="footer">
+            <img src="static/images/h1.jpg" width="100%" height="100px">
         </div>
-        <div style="width:68%">
-            <div id="comment_area" style="width:100%;height: 150px">
-                <textarea style="width: 100%;height: 100%;list-style: none" placeholder="留下评论吧"></textarea>
-            </div>
-            <button  class ="btn btn-primary" type="submit" onclick="alert('评论成功！')"
-                     style="width:80px;float: right;margin-top: 5px;margin-bottom: 10px">提交</button>
-        </div>
-    </div>
-    <!-- footer -->
-    <div id="footer">
-        <img src="images/h1.jpg" width="100%" height="100px">
-    </div>
 
-</div>
-</div>
-<script>
-    function Search(){
-        let key=document.getElementById("keywords").value;
-        if(key==""){
-            alert("查询字不能为空!");
+    </div>
+    </div>
+    <script>
+        function Search() {
+            let key = document.getElementById("keywords").value;
+            if (key == "") {
+                alert("查询字不能为空!");
+            }
         }
-    }
-</script>
-<script>
-    function getCurDate()
-    {
-        var d = new Date();
-        var week;
-        switch (d.getDay()){
-            case 1: week="星期一"; break;
-            case 2: week="星期二"; break;
-            case 3: week="星期三"; break;
-            case 4: week="星期四"; break;
-            case 5: week="星期五"; break;
-            case 6: week="星期六"; break;
-            default: week="星期天";
+    </script>
+    <script>
+        function getCurDate() {
+            var d = new Date();
+            var week;
+            switch (d.getDay()) {
+                case 1:
+                    week = "星期一";
+                    break;
+                case 2:
+                    week = "星期二";
+                    break;
+                case 3:
+                    week = "星期三";
+                    break;
+                case 4:
+                    week = "星期四";
+                    break;
+                case 5:
+                    week = "星期五";
+                    break;
+                case 6:
+                    week = "星期六";
+                    break;
+                default:
+                    week = "星期天";
+            }
+            var years = d.getFullYear();
+            var month = add_zero(d.getMonth() + 1);
+            var days = add_zero(d.getDate());
+            var hours = add_zero(d.getHours());
+            var minutes = add_zero(d.getMinutes());
+            var seconds = add_zero(d.getSeconds());
+            var ndate = years + "年" + month + "月" + days + "日 " + hours + ":" + minutes + ":" + seconds + " " + week;
+            var divT = document.getElementById("logInfo");
+            divT.innerHTML = ndate;
         }
-        var years = d.getFullYear();
-        var month = add_zero(d.getMonth()+1);
-        var days = add_zero(d.getDate());
-        var hours = add_zero(d.getHours());
-        var minutes = add_zero(d.getMinutes());
-        var seconds=add_zero(d.getSeconds());
-        var ndate = years+"年"+month+"月"+days+"日 "+hours+":"+minutes+":"+seconds+" "+week;
-        var divT=document.getElementById("logInfo");
-        divT.innerHTML= ndate;
-    }
-    function add_zero(temp)
-    {
-        if(temp<10) return "0"+temp;
-        else return temp;
-    }
-    setInterval("getCurDate()",100);
-</script>
+
+        function add_zero(temp) {
+            if (temp < 10) return "0" + temp;
+            else return temp;
+        }
+        setInterval("getCurDate()", 100);
+    </script>
 </body>
+
 </html>
