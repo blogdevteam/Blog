@@ -114,6 +114,7 @@ class Notification(models.Model):
 
     user = models.ForeignKey(User, on_delete = models.CASCADE )
     content = models.CharField(max_length = 400)
+    unread = models.BooleanField(default = True)
 
     class Meta:
         db_table = 'Notification'
@@ -125,4 +126,3 @@ class Cookie(models.Model):
 
     class Meta:
         db_table = 'Cookie'
-
