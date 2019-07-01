@@ -45,12 +45,24 @@ class Blog(models.Model):
 
     # 将数据库里存储的markdown代码转化为HTML
     def toHTML():
-        return markdown.markdown(content.__str__())
+        return markdown.markdown(content.__str__(),
+            extensions=[
+            # 包含 缩写、表格等常用扩展
+            'markdown.extensions.extra',
+            # 语法高亮扩展
+            'markdown.extensions.codehilite',
+            ])
 
     # 返回博客的Preview部分，使用HTML格式
     def preview():
         str = content.__str__()
-        str = markdown.markdown(str[0:str.index("<!--more-->")])
+        str = markdown.markdown(str[0:str.index("<!--more-->")],
+            extensions=[
+            # 包含 缩写、表格等常用扩展
+            'markdown.extensions.extra',
+            # 语法高亮扩展
+            'markdown.extensions.codehilite',
+            ])
 
         return str
 
