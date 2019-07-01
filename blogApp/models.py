@@ -1,10 +1,10 @@
 from django.db import models
+import markdown
 
 # Create your models here.
 
 # 用户表
 class User(models.Model):
-    # TODO: 在migration后，手动添加设置初始值的SQL代码 alter sequence user_id restart with 100000
     user_id = models.BigAutoField(primary_key = True)
 
     name = models.CharField(max_length = 40)
@@ -43,6 +43,16 @@ class Blog(models.Model):
     create_time = models.DateTimeField()
     modified_time = models.DateTimeField()
 
+    # 将数据库里存储的markdown代码转化为HTML
+    def toHTML():
+        return markdown.markdown(content.__str__())
+
+    def preview():
+        str = content.__str__()
+        str = str[0:str.index("<!--more-->")]
+
+        return str
+
     class Meta:
         db_table = 'Blog'
 
@@ -79,7 +89,6 @@ class BlogTag(models.Model):
 
 # 管理员表
 class Admin(models.Model):
-    # TODO: 在migration后，手动添加设置初始值的SQL代码 alter sequence admin_id restart with 10000
     admin_id = models.BigAutoField(primary_key = True)
 
     password = models.CharField(max_length = 32)
