@@ -25,6 +25,7 @@ class User(models.Model):
 class Category(models.Model):
     cate_id = models.BigAutoField(primary_key = True)
 
+    user = models.ForeignKey(User, on_delete = models.CASCADE)
     cate_name = models.CharField(max_length = 40)
 
     class Meta:
