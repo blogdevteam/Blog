@@ -47,6 +47,7 @@ class Blog(models.Model):
     def toHTML():
         return markdown.markdown(content.__str__())
 
+    # 返回博客的Preview部分，使用HTML格式
     def preview():
         str = content.__str__()
         str = markdown.markdown(str[0:str.index("<!--more-->")])
