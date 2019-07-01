@@ -107,13 +107,12 @@ def login(req):
                 return response
             else:
                 #比较失败，还在login
-                return HttpResponseRedirect('blogApp/login/')
+                return HttpResponseRedirect('/login')
     else:
         uf = UserForm()
     return render(req,'blogApp/Login.html',{'uf':uf})
 
 #登陆成功
-
 def index(req):
     useridsalt = req.COOKIES.get('userid','')
     result = Cookie.objects.filter(cookie__exact=useridsalt)
