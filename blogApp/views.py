@@ -16,10 +16,6 @@ class ReForm(forms.Form):
     password1 = forms.CharField(label='密码',widget=forms.PasswordInput())
     password2 = forms.CharField(label='确认密码', widget=forms.PasswordInput())
 
-
-def index(request):
-    return HttpResponse("Hello world")
-
 #注册
 def regist(req):
     if req.method == 'POST':
