@@ -49,7 +49,7 @@ class Blog(models.Model):
 
     def preview():
         str = content.__str__()
-        str = str[0:str.index("<!--more-->")]
+        str = markdown.markdown(str[0:str.index("<!--more-->")])
 
         return str
 
