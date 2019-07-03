@@ -1,0 +1,253 @@
+<!doctype html>
+<html class="no-js">
+
+<head>
+    <meta charset="utf-8">
+    <script src="/static/css/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="css/amazeui.css">
+</head>
+
+<style>
+    #header {
+        background-color: lightskyblue;
+        box-shadow: 2px 2px 1px #888888;
+        padding: 5px;
+        height: 30px;
+    }
+    
+    #left-contaniner {
+        background-color: #eef;
+        float: left;
+        width: 13%;
+        padding: 1%;
+        box-shadow: 6px 6px 3px #888888;
+        margin: 2.5%;
+    }
+    
+    #category-list li {
+        color: #00003a;
+        font-size: 12px;
+        height: 27px;
+        line-height: 27px;
+        padding-left: 8px;
+        border-right-width: 0;
+    }
+    
+    #category-list {
+        border-left: 4px solid #146eb4;
+    }
+    
+    #blog-list th,
+    td {
+        align-content: "center";
+        width: 60%, 10%, 10%, 10%, 10%;
+        border: 1px solid #cad9ea;
+        color: #666;
+        height: 30px;
+    }
+    
+    #search {
+        width: 100%;
+    }
+    
+    #all-blog {
+        background-color: lightyellow;
+        box-shadow: 6px 6px 3px #888888;
+        margin-top: 5%;
+        margin-right: 2%;
+        float: left;
+        padding: 1%;
+        width: 76%;
+    }
+    
+    #blog-list {
+        border-collapse: collapse;
+        margin: 0 auto;
+        text-align: center;
+    }
+    
+    #blog-list thead th {
+        background-color: #CCE8EB;
+        width: 100px;
+    }
+    
+    #blog-list tr:nth-child(odd) {
+        background: #fff;
+    }
+    
+    #blog-list tr:nth-child(even) {
+        background: #F5FAFA;
+    }
+</style>
+
+<body>
+
+    <div id="header">
+        <div style="float:left"> <a href="./homePage.html">回到聚合页</a> </div>
+        <div style="float:right"> <a href="./personalPage.html">退出登录</a> </div>
+    </div>
+
+    <div id="logo">
+        <h1>
+            <a href="./homePage.html" title="开发者的网上家园"><img src="./images/title.PNG" alt="Logo" width="366" height="118" /></a>
+        </h1>
+    </div>
+
+    <div id="main">
+        <div id="left-contaniner">
+            <h4>操作</h4>
+            <a href="/edit/0/">添加新博客</a>
+            <br>
+            <a href="/download/{{ username }}/">下载博客备份</a>
+            <br>
+            <br>
+            <br>
+
+            <h4>分类</h4>
+            <ul id="category-list">
+                {% for cate,value in catedic.items %}
+                <li>
+                    {% for foo in recateset %}
+                        {% if foo.cate_name == cate %}
+                            <a href="javascript:filtercate({{ foo.cate_id }})">
+                        {{ cate }}({{ value }})
+                        </a>
+                        {% endif %}
+                    {% endfor %}
+                {% if value == 0 %}
+                    {% for i in recateset %}
+                        {% if i.cate_name == cate %}
+                            <button onclick="delcate({{ i.cate_id }})">
+                        删除
+                    </button>
+                        {% endif %}
+                    {% endfor %}
+
+                {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            <form>
+                <input id = "cate" type="text" style="width:90%; margin:5%">
+                <input  onclick="addcate()" type="button" value="添加分类" style="width:75%; margin:12.5%">
+            </form>
+        </div>
+
+        <div id="all-blog">
+
+            <div>
+                <a href="./personalPage.html">回到我的博客首页</a>
+            </div>
+
+            <div id="search">
+                <form style="text-align:right; margin:2.5%">
+                    <input type="text" name="keyword">
+                    <input type="submit" value="搜索">
+                </form>
+            </div>
+
+            {% for cat in catset %}
+    <option value="{{ cat}}">{{ cat }}</option>
+    {% endfor %}
+
+            <table width="100%" id="blog-list">
+                <tbody>
+                    <tr>
+                        <th>标题</th>
+                        <th>阅读数</th>
+                        <th>赞数</th>
+                        <th>操作</th>
+                        <th>操作</th>
+                    </tr>
+                    {% for cat in catset %}
+    <option value="{{ cat}}">{{ cat }}</option>
+    {% endfor %}
+
+
+                    {%for blogone in reblogset%}
+                    <tr>
+                        <td>
+                            <!-- 这个BlogContent动态根据参数，变成某个人的个人博客主页 -->
+                            <a href="./BlogContent.html">{{ blogone.title }}</href>
+                        </td>
+                        <td>{{ blogone.view_num }}</td>
+                        <td>{{ blogone.like_num }}</td>
+                        <td>
+                            <a href="/edit/{{ blogone.blog_id }}/">编辑</href>
+                        </td>
+                        <td>
+                            <input  type="button" name="删除" value="删除" onclick="deleteblog({{ blogone.blog_id }})"/>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div id="pager">
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/amazeui.min.js"></script>
+
+<script>
+    function deleteblog(blogoneid) {
+            var post_data_del = {
+                "blogone": blogoneid,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            };
+            $.ajax({
+                url: "/manage/{{ username }}/",
+                type: "POST",
+                data: post_data_del,
+            });
+            window.alert("删除成功")
+            location.reload()
+        }
+    function addcate() {
+        var post_data_addcate = {
+                "catename": document.getElementById("cate").value,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            };
+            $.ajax({
+                url: "/manage/{{ username }}/",
+                type: "POST",
+                data: post_data_addcate,
+            });
+            window.alert("添加成功")
+            location.reload()
+
+    }
+    function delcate(cateid) {
+        var post_data_delcate = {
+                "catetodel": cateid,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            };
+            $.ajax({
+                url: "/manage/{{ username }}/",
+                type: "POST",
+                data: post_data_delcate,
+            });
+            window.alert("删除成功")
+            location.reload()
+    }
+    function filtercate(cateid) {
+        var post_data_fil = {
+                "catetofil": cateid,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            };
+            $.ajax({
+                url: "/manage/{{ username }}/",
+                type: "POST",
+                data: post_data_fil,
+                success : function () {
+                    window.location.reload()
+                }
+            });
+
+    }
+</script>
+</body>
+
+</html>

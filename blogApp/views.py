@@ -8,6 +8,8 @@ from django.db.models import Q
 from functools import *
 import random
 
+from django.db.models import Max,Min
+
 #表单
 class UserForm(forms.Form):
     username = forms.CharField(label='用户名',max_length=100)
@@ -187,3 +189,184 @@ def search(req):
     dic['blogList'] = list(queryList)
 
     return render(req, 'blogApp/search.html', dic)
+
+def edit(req,blogid):
+    blogid = int(blogid)
+    #1.标签和分类的问题
+    #blogid 查出userid然后和cookie进行对比，
+    #找cookie对应的id
+    useridsalt = req.COOKIES.get('userid','')
+    c_userid = Cookie.objects.get(cookie__exact=useridsalt).user_id
+    #不加_id的话是一个对象，加的话是一贯制
+    #找用户名对应的id
+
+    #若blogid不为0则需要将博客内容读出
+    #不等于0，编辑再完善
+    if (blogid!=0):
+
+        #验证正确性
+        u_userid = Blog.objects.get(blog_id=blogid).user_id
+        if (u_userid != c_userid):
+            return HttpResponseRedirect('/login')
+
+        #从数据库中读取原来的博客题目内容分类等
+        catset1 = Category.objects.filter(user_id=c_userid)
+        catset = catset1.values_list('cate_name', flat=True)
+        blogset = Blog.objects.filter(blog_id=blogid)
+        reblog1 = list(blogset)
+        reblog = reblog1[0]
+        catename = Category.objects.get(cate_id=reblog.cate_id).cate_name
+        #从数据库中读取tags信息
+        pblogtagset = BlogTag.objects.filter(blog_id=blogid)
+        blogtagset = list(pblogtagset)
+        str = ''
+        for i in blogtagset:
+            tagnameqs = Tag.objects.filter(tag_id=i.tag_id)
+            if tagnameqs :
+                tagname = Tag.objects.get(tag_id=i.tag_id).tag_name
+                str = str +tagname + ','
+                print(str)
+        str = str.rstrip(',')
+        print(str)
+
+
+
+        #从前端获取数据
+        title = req.POST.get('title', None)
+        text = req.POST.get('text', None)
+        mytags = req.POST.get('mytags', None)
+        aclass = req.POST.get('class', None)
+
+        if (title != None):
+            # 将Blog进行更新,本来就有blogid
+            # 数据转换，获取userid,classid
+            #create blog
+            cate_id = Category.objects.get(cate_name__exact=aclass).cate_id
+            time_now = timezone.now()
+            Blog.objects.filter(blog_id=blogid).update(content=text, title=title,
+                                modified_time=time_now, cate_id=cate_id)
+            #update tags and blogtag,mytags是新输入的tags
+            #新输入的tags,列表格式
+            l = mytags.split(',')
+            inserttags = []
+            for i in l:
+                inserttags.append(i.lstrip(' ').rstrip(' '))
+
+            #旧的删除
+            for i in blogtagset:
+                BlogTag.objects.filter(blog_id=blogid, tag_id=i.tag_id).delete()
+            #对每一个新的i，若在tags表里有，如没有，
+            for i in inserttags:
+                result = Tag.objects.filter(tag_name=i)
+                if result:
+                    #吧它加上，便于实现
+                    everyid = Tag.objects.get(tag_name=i).tag_id
+                    BlogTag.objects.create(blog_id=blogid,tag_id=everyid)
+                else:
+                    Tag.objects.create(tag_name=i)
+                    everyid = Tag.objects.get(tag_name=i).tag_id
+                    BlogTag.objects.create(blog_id=blogid, tag_id=everyid)
+        return render(req, 'blogApp/edit.html', {'catset': catset, 'reblog': reblog, 'blogid': blogid,'catename':catename,'str': str})
+
+    #等于零，新的
+    else:
+        catset1 = Category.objects.filter(user_id=c_userid)
+        catset = catset1.values_list('cate_name', flat=True)
+
+        # 前端传后端   ，不空再传
+        title = req.POST.get('title', None)
+        text = req.POST.get('text', None)
+        mytags = req.POST.get('mytags', None)
+        aclass = req.POST.get('class', None)
+
+        if (title != None):
+            # 将Blog存进数据库,给出blogid
+            # 数据转换，获取userid,classid
+            cate_id = Category.objects.get(cate_name__exact=aclass).cate_id
+            time_now = timezone.now()
+            Blog.objects.create(content=text, title=title, view_num=0, like_num=0, create_time=time_now,
+                                modified_time=time_now, cate_id=cate_id, user_id=c_userid)
+            maxiddic = Blog.objects.aggregate(Max('blog_id'))
+            blogid = maxiddic["blog_id__max"]
+
+            # 将tags存进数据库,如果库中没有就插入，有就跳过,c_userid,tagnum,blogid
+            # print(type(mytags))
+            l = mytags.split(',')
+            inserttags = []
+            for i in l:
+                inserttags.append(i.lstrip(' ').rstrip(' '))
+            for i in l:
+                result = Tag.objects.filter(tag_name=i)
+                if result:
+                    tagnum = Tag.objects.get(tag_name=i).tag_id
+                    btresult = BlogTag.objects.get_or_create(blog_id=blogid, tag_id=tagnum)
+                else:
+                    Tag.objects.create(tag_name=i)
+                    tagnum = Tag.objects.get(tag_name=i).tag_id
+                    BlogTag.objects.create(blog_id=blogid, tag_id=tagnum)
+        return render(req, 'blogApp/edit.html', {'catset': catset, 'blogid': blogid})
+
+
+    #不管blog内容怎么样都要从数据库中读出标签
+
+
+def manage(req,username):
+    # 1.动态生成页面
+    # 2.页面的按钮需要一些路由
+    # 3.利用ajax将数据传到后端，存入数据库
+    #添加新博客的时候时用0传入，编辑的时候用某个blogid进入
+    #用username和cookie进行对比
+    catetofil = req.POST.get('catetofil', None)
+    useridsalt = req.COOKIES.get('userid', '')
+    c_userid = Cookie.objects.get(cookie__exact=useridsalt).user_id
+    u_userid = User.objects.get(name__exact=username).user_id
+    if (c_userid == u_userid ):
+        blogsetall = Blog.objects.filter(user_id=c_userid)
+        reblogsetall = list(blogsetall)
+        #后端向前端传数据
+        #如果没有筛选条件传整个博客列表（默认）
+        if (catetofil == None):
+            blogset = Blog.objects.filter(user_id=c_userid)
+            reblogset = list(blogset)
+        # 如果有筛选条件，则传分类的博客对象
+        if (catetofil != None):
+            blogset = Blog.objects.filter(user_id=c_userid,cate_id=catetofil)
+            reblogset = list(blogset)
+        #传一个字典吧，分类和分类的个数传到前端,但是前端要用特别办法
+        catedic = {}
+        cateset = Category.objects.filter()
+        recateset = list(cateset)
+        for i in recateset:
+            catedic[i.cate_name] = 0
+        for blogone in reblogsetall:
+            catename = Category.objects.get(cate_id__exact=blogone.cate_id).cate_name
+            catedic[catename] = catedic[catename] + 1
+
+        #reblogset = blogset.values_list('title','view_num','like_num')
+        #print(reblogset[0][0])可以用数组访问
+
+
+        test = req.POST.get('blogone', None)#ajax不能穿一个对象？直接传id了
+        cate = req.POST.get('catename',None)
+        catedel = req.POST.get('catetodel',None)
+
+        if (test != None):
+            Blog.objects.filter(blog_id__exact=test).delete()
+        if (cate != None):
+            Category.objects.create(cate_name=cate,user_id=u_userid)
+        if (catedel != None):
+            Category.objects.filter(cate_id__exact=catedel).delete()
+
+
+        print(reblogset)
+
+        return render(req,'blogApp/back-end.html', {'reblogset':reblogset, 'username':username,'catedic':catedic,'recateset':recateset})
+
+        #利用reblogset自动生成表单
+
+    else:
+        return HttpResponseRedirect('/login')
+
+#to do
+def download(req,username):
+    pass

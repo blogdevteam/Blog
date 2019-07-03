@@ -1,0 +1,130 @@
+<head>
+    <meta charset="UTF-8">
+    <script src="/static/css/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="./CSS/amazeui.css">
+
+    <title>
+        编辑文章
+    </title>
+
+
+        <script language="javascript">
+ if(typeof jQuery == 'undefined'){
+     window.alert("没有jquery");
+}
+ </script>
+</head>
+
+<style>
+    div {
+        overflow: hidden;
+    }
+    
+    textarea {
+        resize: none;
+    }
+    
+    #header {
+        background-color: lightskyblue;
+        box-shadow: 2px 2px 1px #888888;
+        padding: 5px;
+        height: 30px;
+    }
+    
+    #content {
+        background-color: antiquewhite;
+        width: 94%;
+        margin-top: 2%;
+        margin-left: 3%;
+        margin-right: 3%;
+        padding: 2%;
+        float: left;
+        box-shadow: 6px 6px 3px #888888;
+    }
+    
+    #choose {
+        float: right;
+        width: 10%;
+    }
+</style>
+
+<body>
+
+    <div id="header">
+        <div style="float:left"> <a href="./homePage.html">回到聚合页</a> </div>
+        <div style="float:right"> <a href="./personalPage.html">退出登录</a> </div>
+    </div>
+
+    <div id="content">
+        <div style="float:right"> <a href="./back-end.html">返回博客列表</a></div>
+
+        <h4>标题：</h4>
+        <textarea id="title" rows="1" style="width:80%">{{ reblog.title }}</textarea>
+        <br>
+        <h4>内容：(支持markdown语法)</h4>
+        <textarea id="text" rows="20" style="width:80%">{{ reblog.content }}</textarea>
+
+        <div id="choose">
+            <h4>分类：</h4>
+            <select id = "class">
+                {% for cat in catset %}
+                    {% if cat == catename %}
+                    <option value="{{ cat}}" selected >{{ cat }}</option>
+                    {% endif %}
+                    {% if cat != catename %}
+                    <option value="{{ cat}}" >{{ cat }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <div id="tags">
+                <h4>请输入标签：</h4>
+                <textarea id = "mytags" rows="1">{{ str }}</textarea>
+            </div>
+
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <div><input href="/edit/{{ blogid }}/" type="button" name="发布" value="发布" onclick="givecontent()"/>
+            </div>
+        </div>
+    </div>
+
+<script>
+    function givecontent() {
+            var post_data = {
+                "title": document.getElementById("title").value,
+                "text": document.getElementById("text").value,
+                "mytags":document.getElementById("mytags").value,
+                "class":document.getElementById("class").value,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            };
+            $.ajax({
+                url: "/edit/{{ blogid }}/",
+                type: "POST",
+                data: post_data,
+
+
+
+            });
+            document.getElementById("title").value = ''
+            document.getElementById("text").value = ''
+            document.getElementById("mytags").value = ''
+            document.getElementById("class").value = ''
+            window.alert("发布成功")
+        }
+</script>
+    </body>
+
