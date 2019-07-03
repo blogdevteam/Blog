@@ -1,22 +1,24 @@
 <!doctype html>
 <html>
+
 <head>
-<meta charset="utf-8">
-<link href="/static/css/Register.css" type="text/css" rel="stylesheet">
-<title>登陆界面</title>
+    <meta charset="utf-8">
+    <link href="/static/css/Register.css" type="text/css" rel="stylesheet">
+    <title>登陆界面</title>
 </head>
 
 <body background="/static/images/head.jpg">
-<div id="Login_box" opacity="0.9">
-    <h2 style="padding-top: 40px">欢迎注册</h2>
-    <img id="head_img" src="/static/images/bg.jpg">
-    <p>念念不忘，必有回响</p>
-    <form method = 'post' enctype="multipart/form-data">
-    {% csrf_token %}
-    {{uf1.as_p}}
-    <input type="submit" value = "ok" />
-    </form>
-    <a href="Login.html"><span>返回</span></a>
-</div>
+    <div id="Login_box" opacity="0.9">
+        <h2 style="padding-top: 40px">欢迎注册</h2>
+        <img id="head_img" src="/static/images/bg.jpg">
+        <p>念念不忘，必有回响</p>
+        <form method='post' enctype="multipart/form-data">
+            {% csrf_token %} {{uf1.as_p}}
+            <input type="submit" value="ok" />
+        </form>
+        <a href="/login/"><span>返回</span></a>
+
+    </div>
 </body>
+
 </html>

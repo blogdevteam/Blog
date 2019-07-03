@@ -4,6 +4,8 @@ from django.shortcuts import render,render_to_response
 from django.http import HttpResponse,HttpResponseRedirect
 from django import forms
 from django.utils import timezone
+from django.db.models import Q
+from functools import *
 import random
 
 #表单
@@ -15,6 +17,12 @@ class ReForm(forms.Form):
     username = forms.CharField(label='用户名',max_length=100)
     password1 = forms.CharField(label='密码',widget=forms.PasswordInput())
     password2 = forms.CharField(label='确认密码', widget=forms.PasswordInput())
+
+class SearchForm(forms.Form):
+    keywords = forms.CharField(label = "关键字", max_length = 100)
+
+def getUserByCOOKIE(cook):
+    return Cookie.objects.get( cookie = cook ).user
 
 #注册
 def regist(req):
@@ -112,13 +120,11 @@ def login(req):
         uf = UserForm()
     return render(req,'blogApp/Login.html',{'uf':uf})
 
-#登陆成功
-def index(req):
-    useridsalt = req.COOKIES.get('userid','')
-    result = Cookie.objects.filter(cookie__exact=useridsalt)
-    userid1 = result.values_list('user',flat=True)
-    userid =  userid1[0]
-    return render_to_response('blogApp/BlogContent.html' ,{'username':userid})
+# 登陆成功
+# def index(req):
+#     userid = getUserByCOOKIE( req.COOKIES.get('userid', '') ).user_id
+    
+#     return render_to_response('blogApp/BlogContent.html' ,{'username':userid})
 
 #退出
 def logout(req):
@@ -126,3 +132,58 @@ def logout(req):
     #清理cookie里保存username
     response.delete_cookie('username')
     return response
+
+
+# 首页
+
+def index(req):
+
+    blogList = sorted(Blog.objects.all(), key = lambda x:-x.view_num)[:10]
+    userList = sorted(
+        User.objects.all(), key = lambda x:-(
+            sum( 
+                map(lambda x:x.view_num, x.blog_set.all())
+                )
+            )
+        )[:20]
+
+    dic = {}
+    dic['userList'] = userList
+    dic['blogList'] = blogList
+
+    return render(req, "blogApp/index.html", dic)
+
+# 搜索结果
+def search(req):
+    req.encoding = 'utf-8'
+
+    queryList = Blog.objects.all()
+
+    dic = {}
+
+    if('keywords' in req.GET and req.GET['keywords'] == ''):
+        return HttpResponse('请输入关键词')
+
+    dic['keywords'] = []
+    if ('keywords' in req.GET and not req.GET['keywords'] == ''):
+        queryList = queryList.filter( 
+            reduce( lambda x, y: x & y, map( 
+                lambda x: (Q(title__icontains = x) | Q(title__icontains = x)) , req.GET['keywords'].split(' '))
+            )
+        )
+        dic['keywords'].append(req.GET['keywords'])
+
+    if ('category_id' in req.GET and not req.GET['category_id'] == ''):
+        queryList = queryList.filter(category__id = req.GET['category_id'])
+        dic['category_id'] = req.GET['category_id']
+    
+    if ('user_id' in req.GET and not req.GET['user_id'] == ''):
+        queryList = queryList.filter(user__id = req.GET['user_id'])
+        dic['user_id'] = req.GET['user_id']
+
+    if ('tag_id' in req.GET and not req.GET['tag_id'] == ''):
+        queryList = queryList.filter(tag_id = req.GET['tag_id'])
+
+    dic['blogList'] = list(queryList)
+
+    return render(req, 'blogApp/search.html', dic)
