@@ -1,4 +1,4 @@
-from .models import *
+﻿from .models import *
 from django.template import RequestContext
 from django.shortcuts import render,render_to_response
 from django.http import HttpResponse,HttpResponseRedirect
@@ -414,3 +414,411 @@ def info(req,username):
     data={'nickname': auser.nickname,'email':auser.email,'username':username}
     print(data)
     return render(req,'blogApp/personalInfo.html',data)
+
+
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.shortcuts import HttpResponse
+
+from django.shortcuts import render
+from django.core.paginator import Paginator
+from blog_operation.models import *
+from django import forms
+
+from django.utils import timezone
+
+
+class CommentForm(forms.Form):
+    comment_content = forms.CharField()
+    comment_user_id = forms.CharField()
+
+
+class FollowForm(forms.Form):
+    follow_user_id = forms.CharField()
+    followed_user_id = forms.CharField()
+
+
+class FavouriteForm(forms.Form):
+    blog_id = forms.CharField()
+    user_id = forms.CharField()
+
+
+def remove_the_same(list):
+    temp = []
+    for i in list:
+        if i not in temp:
+            temp.append(i)
+    return temp
+
+
+def get_user_blog_list(user_id):
+    global result
+    global flag
+    global count
+    flag = False
+    count = 0
+    blog_list = []
+    try:
+        result = Blog.objects.filter(user_id=user_id)
+        for i in result:
+            time = i.create_time
+            title = i.title
+            content = i.content
+            link = get_blogcontent_link(i.blog_id)
+            cate_name = Category.objects.get(cate_id=i.cate_id).cate_name
+            temp = {'title': title,
+                    'content': content,
+                    'time': time,
+                    'blog_link': link,
+                    'cate_name': cate_name}
+            blog_list.append(temp)
+            count +=1
+        if count != 0:
+            flag = True
+    except Blog.DoesNotExist:
+        blog_list = None
+        flag = False
+    return blog_list, flag
+
+
+def get_user_cate(id):
+    cate_list = []
+    global flag
+    global count
+    flag = False
+    count = 0
+    try:
+        for i in Blog.objects.filter(user_id=id):
+            content = {'cate_name': (Category.objects.get(cate_id=i.cate_id)).cate_name,
+                       'link': '-'}
+            cate_list.append(content)
+            count += 1
+        cate_list = remove_the_same(cate_list)
+        if count != 0:
+            flag = True
+    except Blog.DoesNotExist:
+        cate_list = None
+        flag = False
+    return cate_list, flag
+
+
+def get_user_tag(id):
+    global tag_list
+    global count
+    global flag
+
+    tag_list = []
+    count = 0
+    flag = False
+
+    try:
+        for i in Blog.objects.filter(user_id=id):
+            for j in BlogTag.objects.filter(blog_id=i.blog_id):
+                content = {'name': (Tag.objects.get(tag_id=j.tag_id)).tag_name, 'link': '-'}
+                tag_list.append(content)
+                count += 1
+            if count > 15:
+                break
+        if count != 0:
+            flag = True
+        tag_list = remove_the_same(tag_list)
+    except Blog.DoesNotExist:
+        tag_list = None
+        flag = False
+    return tag_list, flag
+
+
+def get_user_file(id):
+    global file_list
+
+    file_list = []
+    try:
+        for i in Blog.objects.filter(user_id=id):
+            time = str(i.create_time)
+            time = time[0:time.rfind(' ')]
+            content = {'file': time, 'link':'-'}
+            file_list.append(content)
+        file_list = remove_the_same(file_list)
+    except Blog.DoesNotExist:
+        file_list = None
+
+    return file_list
+
+
+def get_blog_user(blog_id):
+    blog = Blog.objects.get(blog_id=blog_id)
+    user = User.objects.get(user_id=blog.user_id)
+    return user.user_id, user.name
+
+
+def personalIndex(request, username):
+    user_id, flag = get_user_id(username)
+    global follow_form
+    global flo_flag
+    global follow_user_id
+    global followed_user_id
+
+    if flag:
+        if request.method == "POST":
+
+            follow_form = FollowForm({'follow_user_id': follow_user_id,
+                                      'followed_user_id': followed_user_id})
+            if follow_form.is_valid():
+                followed_user_id = user_id
+                follow_user_id = 111119
+                print("被关注" + str(followed_user_id))
+                print("关注" + str(follow_user_id))
+                flo_flag = whether_follow(followed_user_id, follow_user_id)
+                print(flo_flag)
+
+                # follow_user_id = getUserByCOOKIE(request.COOKIES.get('userid', ''))
+                if not flo_flag:
+                    Follow.objects.create(fld_user_id=followed_user_id, user_id=follow_user_id)
+                    flo_flag = True
+                else:
+                    t = Follow.objects.get(fld_user_id=followed_user_id, user_id=follow_user_id)
+                    t.delete()
+                    flo_flag = False
+            print(flo_flag)
+            context = get_personal_page_content(request, user_id)
+            context['flo_flag'] = flo_flag
+            context['follow_form'] = follow_form
+            return render(request, 'personal page.html', context)
+        else:
+            follow_form = FollowForm()
+            followed_user_id = user_id
+            follow_user_id = 111119
+            print("被关注" + str(followed_user_id))
+            print("关注" + str(follow_user_id))
+            flo_flag = whether_follow(followed_user_id, follow_user_id)
+            print(flo_flag)
+
+            context = get_personal_page_content(request, user_id)
+            # print(flo_flag)
+            context['flo_flag'] = flo_flag
+            context['follow_form'] = follow_form
+            return render(request, 'personal page.html', context)
+        # 将当前页页码，以及当前页数据传递到index.html
+    else:
+        return HttpResponse('未找到用户')
+
+
+def get_user_id(user_name):
+    try:
+        user = User.objects.get(name=user_name)
+    except User.DoesNotExist:
+        return None, False
+    return user.user_id, True
+
+
+def get_personal_page_content(request, user_id):
+    blog_list, blog_flag = get_user_blog_list(user_id)
+    cate_list, cate_flag = get_user_cate(user_id)
+    tag_list, tag_flag = get_user_tag(user_id)
+    file_list = get_user_file(user_id) if blog_flag else []
+    user = User.objects.get(user_id=user_id)
+    # 值1：所有的数据
+    # 值2：每一页的数据
+    # 值3：当最后一页数据少于n条，将数据并入上一页
+    paginator = Paginator(blog_list, 12, 3)
+
+    try:
+        # GET请求方式，get()获取指定Key值所对应的value值
+        # 获取index的值，如果没有，则设置使用默认值1
+        num = request.GET.get('index', '1')
+        # 获取第几页
+        number = paginator.page(num)
+    except PageNotAnInteger:
+        # 如果输入的页码数不是整数，那么显示第一页数据
+        number = paginator.page(1)
+    except EmptyPage:
+        number = paginator.page(paginator.num_pages)
+
+    follow_num = (Follow.objects.filter(fld_user_id=user_id)).count()
+    return {'page': number, 'paginator': paginator,
+            'blog_flag': blog_flag,
+            'nickname': user.nickname,
+            'regist_time': user.regist_time,
+            'follow_num': follow_num,
+            'cate_list': cate_list,
+            'cate_flag': cate_flag,
+            'tag_list': tag_list,
+            'tag_flag': tag_flag,
+            'file_list': file_list,
+            'file_flag': blog_flag}
+
+
+def get_personalpage_link(user_name):
+    return 'http://127.0.0.1:8000/personalpage/' + str(user_name) + '/'
+
+
+def get_blogcontent_link(blog_id):
+    link = 'http://127.0.0.1:8000/blogcontent/' + str(blog_id) + '/'
+    return link
+
+
+def blog_content(request, blog_id):
+
+    global comment_form
+    global follow_form
+    global flo_flag
+    global fav_flag
+    global follow_user_id
+    global followed_user_id
+
+    followed_user_id,name = get_blog_user(blog_id)
+    follow_user_id = '111119'
+    flo_flag = whether_follow(followed_user_id, follow_user_id)
+    fav_flag = whether_fav(blog_id, follow_user_id)
+
+    if request.method == "POST":
+
+        comment_form = CommentForm(request.POST)
+        follow_form = FollowForm({'follow_user_id': follow_user_id,
+                                  'followed_user_id': followed_user_id})
+        fav_form = FavouriteForm({'blog_id': blog_id,
+                                  'user_id': follow_user_id})
+        if fav_form.is_valid():
+            if not fav_flag:
+                Favourite.objects.create(blog_id=blog_id, user_id=follow_user_id)
+                fav_flag = True
+            else:
+                t = Favourite.objects.get(blog_id=blog_id, user_id=follow_user_id)
+                t.delete()
+                fav_flag = False
+
+        if follow_form.is_valid():
+
+            #follow_user_id = getUserByCOOKIE(request.COOKIES.get('userid', ''))
+            if not flo_flag:
+                Follow.objects.create(fld_user_id=followed_user_id, user_id=follow_user_id)
+                flo_flag = True
+            else:
+                t = Follow.objects.get(fld_user_id=followed_user_id, user_id=follow_user_id)
+                t.delete()
+                flo_flag = False
+
+        if comment_form.is_valid():
+            comment_time = timezone.now()
+            comment_content = comment_form.cleaned_data['comment_content']
+            comment_blog_id = blog_id
+            Comment.objects.create(content=comment_content, time=comment_time, blog_id=comment_blog_id, user_id=follow_user_id)
+
+        context = get_content(request, blog_id)
+
+        context['flo_flag'] = flo_flag
+        context['fav_flag'] = fav_flag
+        context['comment_form'] = comment_form
+        context['follow_form'] = follow_form
+        context['fav_form'] = fav_form
+
+        return render(request, 'BlogContent.html', context)
+    else:
+        comment_form = CommentForm()
+        follow_form = FollowForm()
+        fav_form = FavouriteForm()
+
+        context = get_content(request, blog_id)
+
+        context['flo_flag'] = flo_flag
+        context['fav_flag'] = fav_flag
+        context['comment_form'] = comment_form
+        context['follow_form'] = follow_form
+        context['fav_form'] = fav_form
+        return render(request, 'BlogContent.html', context)
+
+
+def whether_follow(fld_user_id, user_id):
+    print("函数调用")
+    print("被关注"+str(fld_user_id))
+    print("关注"+str(user_id))
+    try:
+        follow = Follow.objects.get(fld_user_id=fld_user_id, user_id=user_id)
+    except Follow.DoesNotExist:
+        return False
+    return True
+
+
+def whether_fav(blog_id, user_id):
+    print("函数调用")
+    print("被收藏"+str(blog_id))
+    print("收藏"+str(user_id))
+    try:
+        fav = Favourite.objects.get(blog_id=blog_id, user_id=user_id)
+    except Favourite.DoesNotExist:
+        return False
+    return True
+
+
+def get_content(request, blog_id):
+    context = {}
+    # context['comment_form'] = comment_form
+    id, name = get_blog_user(blog_id=blog_id)
+    user = User.objects.get(user_id=id)
+    blog = Blog.objects.get(blog_id=blog_id)
+    blog.view_num += 1
+    blog.save()
+    context['title'] = blog.title
+    context['content'] = blog.content
+    context['time'] = blog.create_time
+    context['view_num'] = blog.view_num
+
+    context['nickname'] = user.nickname
+    context['regist_time'] = user.regist_time
+    context['follow_num'] = (Follow.objects.filter(fld_user_id=id)).count()
+    context['user_link'] = get_personalpage_link(name)
+
+    # get the all categories the user have used
+    context['cate_list'], context['cate_flag'] = get_user_cate(id)
+
+    # get the first 15 tags the user have used
+    context['tag_list'], context['tag_flag'] = get_user_tag(id)
+
+    # get the all time when the user wrote blog
+    context['file_list'] = get_user_file(id)
+    comment_list, flag = get_blog_comment(blog_id)
+    global paginator
+    global number
+    if comment_list is not None:
+
+        paginator = Paginator(comment_list, 6, 2)
+        try:
+            num = request.GET.get('index', '1')
+            number = paginator.page(num)
+        except PageNotAnInteger:
+            number = paginator.page(1)
+        except EmptyPage:
+            number = paginator.page(paginator.num_pages)
+
+        context['page'] = number
+        context['paginator'] = paginator
+        context['flag'] = flag
+        return context
+
+
+def get_blog_comment(blog_id):
+    global context
+    context = []
+    global comment_list
+    global flag
+    flag = "True"
+    try:
+        comment_list = Comment.objects.filter(blog_id=blog_id)
+        for i in comment_list:
+            user_name = User.objects.get(user_id=i.user_id).nickname
+            temp={'comment_user': user_name, 'content': i.content, 'time': i.time}
+            context.append(temp)
+        flag = "False"
+    except Comment.DoesNotExist:
+        context = None
+
+    #context = remove_the_same(context)
+    return context, flag
+
+
+def home_page(request):
+    return render(request, 'homePage.html')
+
+
+def getUserByCOOKIE(cook):
+
+    return Cookie.objects.get( cookie = cook ).user

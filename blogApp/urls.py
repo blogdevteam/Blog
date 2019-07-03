@@ -19,7 +19,8 @@ urlpatterns = [
 
     path('download/<slug:username>/', views.download, name = 'download'),
     
-    # path('personalIndex/<string:username>/', views.personalIndex, name = 'personalIndex'),
+    path('personalIndex/<string:username>/', views.personalIndex, name = 'personalIndex'),
+    path('blogcontent/<int:blog_id>/', views.blog_content, name='content'),
     # path('manage/<string:username>', views.manage, name = 'manage'),
     # path('edit/<string:username>', views.edit, name = 'edit'),
     # path('info/<string:username>', views.info, name = 'edit'),
