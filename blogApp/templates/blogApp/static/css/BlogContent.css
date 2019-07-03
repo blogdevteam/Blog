@@ -85,3 +85,13 @@
     color: #30a5ff;
     cursor: pointer;
 }
+#logo {
+    position: absolute;
+    left: 1%;
+    top: 0%;
+}
+
+#comment{
+    postion: absolute;
+    bottom: 0px
+}

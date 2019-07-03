@@ -14,9 +14,7 @@ class User(models.Model):
     email = models.EmailField(null = True, blank = True)
     description = models.CharField(max_length = 100, null = True, blank = True)
 
-    image_height = models.PositiveIntegerField(null=True, blank=True, editable=False, default="100")
-    image_width = models.PositiveIntegerField(null=True, blank=True, editable=False, default="100")
-    avatar = models.ImageField(upload_to = 'Img/avatar/', width_field = image_width, height_field = image_height, null = True, blank = True)
+    avatar = models.CharField(null= True,max_length= 100)
 
     class Meta:
         db_table = 'User'
@@ -101,14 +99,7 @@ class BlogTag(models.Model):
     class Meta:
         db_table = 'BlogTag'
 
-# 管理员表
-class Admin(models.Model):
-    admin_id = models.BigAutoField(primary_key = True)
 
-    password = models.CharField(max_length = 32)
-
-    class Meta:
-        db_table = 'Admin'
 
 # 收藏夹表
 class Favourite(models.Model):

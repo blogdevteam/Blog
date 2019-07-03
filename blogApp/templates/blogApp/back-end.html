@@ -108,6 +108,7 @@
                 {% for cate,value in catedic.items %}
                 <li>
                     {% for foo in recateset %}
+                    [{{foo.cate_name}}, {{ foo.blog_set.count}}]
                         {% if foo.cate_name == cate %}
                             <a href="javascript:filtercate({{ foo.cate_id }})">
                         {{ cate }}({{ value }})

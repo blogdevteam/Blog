@@ -1,0 +1,229 @@
+ #loginArea
+      {
+        color: #5b5b5b;
+        font-size: 17px;
+        overflow: hidden;
+        text-align: right;
+        margin-left: 10px;
+        margin-right: 40px;
+        line-height: 20;
+      }
+      #header
+      {
+        line-height: 22px;
+        background:url(./images/daniel-leone-small1.jpg) no-repeat left top;
+        background-size:100%,20% ;
+        height:30%;
+      }
+      #logo
+      {
+        position: absolute;
+        left: 1%;
+        top: 0%;
+      }
+      #border
+      {
+        height: 5%;
+        background-color: #0184bb;
+      }
+      #search
+        {
+        font-size: 20px;
+        overflow: hidden;
+        text-align: right;
+        line-height: 5%;
+        padding: 10px 20px 0 20px;
+      }
+      #block
+      {
+        height: auto;
+        margin: 10px auto;
+        overflow: hidden;
+      }
+      #left
+      {
+        width:70%;
+        height:700px;
+
+        float:left;
+        margin-left:10px;
+        display:inline;
+        border-radius: 5px;
+
+        border:4px solid #c8e5bc;
+      }
+      #right
+      {
+        width:25%;
+        margin-right: 20px;
+        height:700px;
+        float:right;
+        display:inline;
+      }
+      div.singleBlock
+      {
+        height:auto;
+        width:98%;
+        margin:1% auto 1% auto;
+        background-color: #e5ffff;
+        border-radius: 10px;
+        -moz-box-shadow: 0 5px 0 0 #d5ffff;
+        box-shadow: 0 5px 0 0 #d5ffff;
+      }
+
+      div.author_category
+      {
+        height:auto;
+        margin:1% auto 1% 1%;
+        <!---->
+      }
+      div.blockContext
+      {
+        height:40%;
+        margin:auto auto auto 1%;
+      }
+      div.blockPreview
+      {
+        height:auto;
+        font-size: 100%;
+        margin:auto auto auto 1%;
+      }
+
+      div.sidebar
+      {
+        margin: auto;
+        border-radius: 5px;
+        background-color: #c8e5bc;
+        -moz-box-shadow: 10px 10px 5px #e5ffff;
+        box-shadow: 7px 7px 7px #e5ffff;
+        height: auto;
+
+      }
+
+      div.sidebarHeader
+      {
+        height: 20px;
+      }
+      div.sidebarList
+      {
+
+      }
+      span.date
+      {
+        width:auto;
+        margin-left: 80%;
+      }
+      a.link
+      {
+        text-decoration:none;
+        font-family: "FZYingBiXingShu-S16S",STKaiti,Cursive,SansSerif,sans-serif;
+      }
+      li
+      {
+        list-style: none;
+      }
+      div.forwardAndPrev{
+        margin: 3px;
+        padding: 3px;
+        text-align: center
+      }
+      div.forwardAndPrev a {
+        border-right: #aaaadd 1px solid;
+        border-top: #aaaadd 1px solid;
+        margin: 2px;
+        border-left: #aaaadd 1px solid;
+        color: #000099;
+        padding: 2px 5px;
+        border-bottom: #aaaadd 1px solid;
+        text-decoration: none
+      }
+      div.forwardAndPrev a:hover {
+        border-right: #000099 1px solid;
+        border-top: #000099 1px solid;
+        border-left: #000099 1px solid;
+        color: #000;
+        border-bottom: #000099 1px solid
+      }
+      div.forwardAndPrev a:active {
+        border-right: #000099 1px solid;
+        border-top: #000099 1px solid;
+        border-left: #000099 1px solid;
+        color: #000;
+        border-bottom: #000099 1px solid
+      }
+      div.forwardAndPrev span.current {
+        border-right: #000099 1px solid;
+        border-top: #000099 1px solid;
+        font-weight: bold;
+        margin: 2px;
+        border-left: #000099 1px solid;
+        color: #fff;
+        padding: 2px 5px;
+        border-bottom: #000099 1px solid;
+        background-color: #000099
+      }
+      div.forwardAndPrev span.disabled {
+        border-right: #eee 1px solid;
+        border-top: #eee 1px solid;
+        margin: 2px;
+        border-left: #eee 1px solid;
+        color: #ddd;
+        padding: 2px 5px;
+        border-bottom: #eee 1px solid
+      }
+
+      #logo {
+        position: absolute;
+        left: 1%;
+        top: 0%;
+      }
+
+      #list1{
+        display: inline-block;
+        white-space:nowrap;
+        list-style: none;
+        width: 100%;
+        height: 50px;
+        background: #00aaff;
+        margin: 0 auto;
+      }
+      #list1 li{
+        margin-top:15px;
+        float: left;
+        width: 70px;
+        text-align: center;
+      }
+      #list1 li a{
+        height: 50px;
+        width: 70px;
+        text-decoration:none;
+        display: inline-block;
+      }
+
+      #list1 li a:hover{
+        color: #67b168;
+        font-size: 18px;
+      }
+      #search_box{
+        width: 200px;
+        position:absolute;
+        right: 650px;
+      }
+      #keywords{
+        height: 20px;
+        outline:none;
+        border-radius: 15px;
+      }
+      #search_button{
+        position:absolute;
+        right: 480px;
+        outline:none;
+      }
+      #button1{
+        border-radius: 15px;
+      }
+      #currentTime{
+        width: 100px;
+        position:absolute;
+        right: 220px;
+      }

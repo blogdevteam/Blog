@@ -150,9 +150,12 @@ def index(req):
             )
         )[:20]
 
+    cock = request.COOKIES.get('userid', None)
+    currentuser = getUserByCOOKIE(cock)
     dic = {}
     dic['userList'] = userList
     dic['blogList'] = blogList
+    dic['currentUser'] = currentuser
 
     return render(req, "blogApp/index.html", dic)
 
@@ -187,6 +190,10 @@ def search(req):
     if ('tag_id' in req.GET and not req.GET['tag_id'] == ''):
         queryList = queryList.filter(tag_id = req.GET['tag_id'])
 
+    cock = req.COOKIES.get('userid', None)
+    if (cock != None):
+        currentuser = getUserByCOOKIE(cock)
+    dic['currentUser'] = currentuser
     dic['blogList'] = list(queryList)
 
     return render(req, 'blogApp/search.html', dic)
@@ -421,7 +428,7 @@ from django.shortcuts import HttpResponse
 
 from django.shortcuts import render
 from django.core.paginator import Paginator
-from blog_operation.models import *
+
 from django import forms
 
 from django.utils import timezone
@@ -564,11 +571,13 @@ def personalIndex(request, username):
                                       'followed_user_id': followed_user_id})
             if follow_form.is_valid():
                 followed_user_id = user_id
-                follow_user_id = 111119
+                cock = request.COOKIES.get('userid',None)
+                follow_user_id = getUserByCOOKIE(cock).user_id
+                print(follow_user_id)
                 print("被关注" + str(followed_user_id))
                 print("关注" + str(follow_user_id))
                 flo_flag = whether_follow(followed_user_id, follow_user_id)
-                print(flo_flag)
+
 
                 # follow_user_id = getUserByCOOKIE(request.COOKIES.get('userid', ''))
                 if not flo_flag:
@@ -582,11 +591,13 @@ def personalIndex(request, username):
             context = get_personal_page_content(request, user_id)
             context['flo_flag'] = flo_flag
             context['follow_form'] = follow_form
-            return render(request, 'personal page.html', context)
+            return render(request, 'blogApp/personalIndex.html', context)
         else:
             follow_form = FollowForm()
             followed_user_id = user_id
-            follow_user_id = 111119
+            cock = request.COOKIES.get('userid', None)
+            follow_user_id = getUserByCOOKIE(cock).user_id
+            print( follow_user_id)
             print("被关注" + str(followed_user_id))
             print("关注" + str(follow_user_id))
             flo_flag = whether_follow(followed_user_id, follow_user_id)
@@ -596,7 +607,7 @@ def personalIndex(request, username):
             # print(flo_flag)
             context['flo_flag'] = flo_flag
             context['follow_form'] = follow_form
-            return render(request, 'personal page.html', context)
+            return render(request, 'blogApp/personalIndex.html', context)
         # 将当前页页码，以及当前页数据传递到index.html
     else:
         return HttpResponse('未找到用户')
@@ -666,7 +677,7 @@ def blog_content(request, blog_id):
     global followed_user_id
 
     followed_user_id,name = get_blog_user(blog_id)
-    follow_user_id = '111119'
+    #follow_user_id = '111119'
     flo_flag = whether_follow(followed_user_id, follow_user_id)
     fav_flag = whether_fav(blog_id, follow_user_id)
 
@@ -818,7 +829,7 @@ def get_blog_comment(blog_id):
 def home_page(request):
     return render(request, 'homePage.html')
 
-
+#给cookie返回user对象
 def getUserByCOOKIE(cook):
 
     return Cookie.objects.get( cookie = cook ).user
