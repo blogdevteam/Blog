@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/static/css/jquery-3.4.1.min.js"></script>
+
+</head>
+<body>
+<form>
+    <label>昵称</label>
+    <input type="text" value={{ nickname }} id="nickname" disabled /><br>
+    <label>邮箱</label>
+    <input type="text" value={{ email }} id="email" disabled/><br>
+    <label>头像</label>
+    <img src="{{ MEDIA_URL }}img/4.jpg"><br>
+
+    <a href="/editInfo/{{ username }}"><button type="button">click me</button></a>
+</form>
+</body>
+</html>

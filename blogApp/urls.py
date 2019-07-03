@@ -11,8 +11,11 @@ urlpatterns = [
     path('regist/', views.regist, name = 'regist'),
 
     path('search/', views.search, name = 'search'),
-path('manage/<slug:username>/', views.manage, name = 'manage'),
+    path('manage/<slug:username>/', views.manage, name = 'manage'),
     path('edit/<slug:blogid>/', views.edit, name = 'edit'),
+    path('info/<slug:username>', views.info, name='edit'),
+    path('editInfo/<slug:username>', views.editInfo, name='editInfo'),
+    path('edit/submit/<slug:username>', views.submit, name='submit'),
 
     path('download/<slug:username>/', views.download, name = 'download'),
     

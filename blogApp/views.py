@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.db.models import Q
 from functools import *
 import random
+from django.http import JsonResponse
 
 from django.db.models import Max,Min
 
@@ -92,7 +93,7 @@ def login(req):
 
             if auser:
                 #比较成index
-                response = HttpResponseRedirect('/index')
+                response = HttpResponseRedirect('/info/%s' % username)
                 #将username写入浏览器cookie,失效时间为3600
                 loginuserid1 = auser.values_list('user_id',flat=True)
                 loginuserid = loginuserid1[0]
@@ -370,3 +371,46 @@ def manage(req,username):
 #to do
 def download(req,username):
     pass
+
+#编辑个人信息
+def editInfo(req, username):
+    useridsalt = req.COOKIES.get('userid', '')
+    result = Cookie.objects.filter(cookie__exact=useridsalt)
+    userid1 = result.values_list('user', flat=True)
+    userid = userid1[0]
+    origin = User.objects.get(user_id__exact=userid)
+    return render(req,'blogApp/personalInfoEdit.html',{'nickname':origin.nickname,'email':origin.email,'username':origin.name})
+
+
+#提交个人信息
+def submit(req,username):
+    if req.method == 'POST':
+        nickname = req.POST.get('nickname')
+        email = req.POST.get('email')
+        avatar = req.FILES.get('avatar')
+        print(avatar)
+
+        try:
+            auser=User.objects.get(name=username)
+            auser.nickname=nickname
+            auser.email=email
+            #auser.avatar=avatar
+            data = {'state': 1}
+            auser.save()
+        except:
+            data = {'state': 0}
+        print(data)
+        return JsonResponse(data)
+
+    return render(req, 'blogApp/personalInfoEdit.html',)
+
+#显示个人信息
+def info(req,username):
+    useridsalt = req.COOKIES.get('userid', '')
+    result = Cookie.objects.filter(cookie__exact=useridsalt)
+    userid1 = result.values_list('user', flat=True)
+    userid = userid1[0]
+    auser=User.objects.get(user_id__exact=userid)
+    data={'nickname': auser.nickname,'email':auser.email,'username':username}
+    print(data)
+    return render(req,'blogApp/personalInfo.html',data)

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/static/css/jquery-3.4.1.min.js"></script>
+    <script>
+        function f1(){
+            alert(document.getElementById('email').value);
+            var formD=new FormData();
+            formD.append("nickname",$("#nickname").val());
+            formD.append("email",$("#email").val());
+            var fileobj=$("#avatar")[0].files[0];
+            formD.append("avatar",fileobj);
+            formD.append("csrfmiddlewaretoken",$("[name='csrfmiddlewaretoken']").val());
+            $.ajax({
+                url:'/edit/submit/{{ username }}',
+                type:"POST",
+                data:formD,
+                processData:false,
+                contentType:false,
+                success: function (data) {
+                    console.log(data.state);
+                }
+            })
+        }
+    </script>
+
+</head>
+<body>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label>昵称</label>
+    <input id="nickname" value={{ nickname }} type="text"  /><br>
+    <label>邮箱</label>
+    <input id="email" value={{ email }} type="text" /><br>
+    <label>头像</label>
+    <img src="{{ MEDIA_URL }}img/4.jpg"><br>
+    <input type="file" id="avatar" value="选择图片上传"/>
+</form>
+    <button type="button" onclick="f1()">确认修改</button>
+</body>
+
+</html>
