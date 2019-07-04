@@ -51,7 +51,7 @@ def regist(req):
             storepassword = hl.hexdigest()
 
             User.objects.create(name= username,password=storepassword,regist_time=time_now,nickname=username)
-            response=HttpResponseRedirect('blogApp/index.html')
+            response=HttpResponseRedirect('/index')
 
             auser = User.objects.filter(name__exact=username, password__exact=storepassword)
             loginuserid1 = auser.values_list('user_id', flat=True)
@@ -842,6 +842,7 @@ def get_content(request, blog_id):
     # get the all time when the user wrote blog
 
     comment_list, flag = get_blog_comment(blog_id)
+    #print(blog.toHTML())
 
     global paginator
     global number

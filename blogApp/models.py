@@ -43,8 +43,8 @@ class Blog(models.Model):
     modified_time = models.DateTimeField()
 
     # 将数据库里存储的markdown代码转化为HTML
-    def toHTML():
-        return markdown.markdown(content.__str__(),
+    def toHTML(self):
+        return markdown.markdown(self.content.__str__(),
             extensions=[
             # 包含 缩写、表格等常用扩展
             'markdown.extensions.extra',
@@ -53,8 +53,8 @@ class Blog(models.Model):
             ])
 
     # 返回博客的Preview部分，使用HTML格式
-    def preview():
-        str = content.__str__()
+    def preview(self):
+        str = self.content.__str__()
         str = markdown.markdown(str[0:str.index("<!--more-->")],
             extensions=[
             # 包含 缩写、表格等常用扩展
