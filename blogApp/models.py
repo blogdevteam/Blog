@@ -55,7 +55,7 @@ class Blog(models.Model):
     # 返回博客的Preview部分，使用HTML格式
     def preview(self):
         str = self.content.__str__()
-        if (str.find("<!--more-->")):
+        if (str.find("<!--more-->")!=-1):
             str = markdown.markdown(str[0:str.index("<!--more-->")],
                 extensions=[
                 # 包含 缩写、表格等常用扩展
