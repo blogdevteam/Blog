@@ -55,14 +55,15 @@ class Blog(models.Model):
     # 返回博客的Preview部分，使用HTML格式
     def preview(self):
         str = self.content.__str__()
-        str = markdown.markdown(str[0:str.index("<!--more-->")],
-            extensions=[
-            # 包含 缩写、表格等常用扩展
-            'markdown.extensions.extra',
-            # 语法高亮扩展
-            'markdown.extensions.codehilite',
-            ])
-        if str == "":
+        if (str.find("<!--more-->")):
+            str = markdown.markdown(str[0:str.index("<!--more-->")],
+                extensions=[
+                # 包含 缩写、表格等常用扩展
+                'markdown.extensions.extra',
+                # 语法高亮扩展
+                'markdown.extensions.codehilite',
+                ])
+        else:
             str = "无预览"
         return str
 
