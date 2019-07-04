@@ -1,5 +1,5 @@
 {% extends "blogApp/_base_with_rightbar.html" %}
-
+{% block pagetitle %} {{ user.nickname }} {% endblock %}
 <!--使用到的变量：
 rightbar:
     currentUser
@@ -8,42 +8,36 @@ rightbar:
     category
     alreadyFollowed
 article:
+    blog_list:
+        blog.link
+        blog.title
+        blog.preview
+        blog.cate_name
 -->
 
 {% block article %}
 
     <!--测试-->
 
-    <div class="card">
-        <div class="card-header">
-            <h3>
-                <a href="">Title</a>
-            </h3>
-            <footer class="blockquote-footer"><cite title="Source Title">in    <a herf="">种类</a></cite></footer>
-        </div>
-        <div class="card-body">
-            <blockquote class="blockquote mb-0">
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-
-        </blockquote>
-        </div>
-    </div>
-
 
     <!--测试结束-->
+    {% if not blog_flag %}
+        <p>暂无博客</p>
+    {% endif %}
 
-
-    {% for blog in blogList %}
+    {% for blog in page.object_list %}
         <div class="card">
         <div class="card-header">
             <h3>
-                <a href="{{ blog.link }}">{{ blog.title }}</a>
+                <a href="/blogContent/{{blog.blog_id}}"> {{blog.title}} </a>
             </h3>
         </div>
         <div class="card-body">
             <blockquote class="blockquote mb-0">
                 <p>{{ blog.preview }}</p>
-                <footer class="blockquote-footer"><cite title="Source Title"><a herf="">{{ blog.cate.cate_name }}</a></cite></footer>
+                <footer class="blockquote-footer">
+
+                    <cite title="Source Title"> <a href="/search?userid={{user.userid}}&category={{blog.cate_id}}"> {{blog.cate.cate_name}} </a></a></cite></footer>
         </blockquote>
         </div>
     </div>

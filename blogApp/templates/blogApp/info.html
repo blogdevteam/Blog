@@ -1,5 +1,5 @@
 {% extends "blogApp/_base_with_header.html" %} {% block main %}
-
+{% block pagetitle %} 个人信息 {% endblock %}
 <div>
     <div style="float:left; width:20%; ">
         <div align="right">
@@ -14,11 +14,11 @@
     <div style="float: right;width:70%; text-align: left; ">
         {% block info %}
         <ul class="list-group" style="width:90%; margin-left: 20px">
-            <li class="list-group-item" style="text-align: left; width:auto;">ID：{{ userID }}</li>
-            <li class="list-group-item" style="text-align: left; width:auto;">昵称：{{ nickname }}</li>
-            <li class="list-group-item" style="text-align: left;width:auto;">用户名：{{ name }}</li>
-            <li class="list-group-item" style="text-align: left;width:auto;">邮箱：{{ email }}</li>
-            <li class="list-group-item" style="text-align: left;width:auto;">个人介绍：{{ introduction }}</li>
+            <li class="list-group-item" style="text-align: left; width:auto;">ID：{{ user.user_id }}</li>
+            <li class="list-group-item" style="text-align: left; width:auto;">昵称：{{ user.nickname }}</li>
+            <li class="list-group-item" style="text-align: left;width:auto;">用户名：{{ user.name }}</li>
+            <li class="list-group-item" style="text-align: left;width:auto;">邮箱：{{ user.email }}</li>
+            <li class="list-group-item" style="text-align: left;width:auto;">个人介绍：{{ user.introduction }}</li>
 
 
         </ul>

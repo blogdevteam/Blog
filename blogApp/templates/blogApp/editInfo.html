@@ -1,12 +1,50 @@
 {% extends "blogApp/info.html" %} {% block info %}
+<script src="/static/css/jquery-3.4.1.min.js"></script>
+    <script>
+        function f1(){
+            var p1=document.getElementById('password2').value;
+            var p2=document.getElementById('password2').value;
+            if(p1!=p2){
+                alert('两次输入密码不一致！')
+            }
+            else{
+                var formD=new FormData();
+                formD.append("nickname",$("#nickname").val());
+                formD.append("email",$("#email").val());
+                formD.append("password1",$("#password1").val());
+                formD.append("password2",$("#password2").val());
+                formD.append("password3",$("#password3").val());
+                formD.append("avater",$("#avatar").val());
+                formD.append("desc",$("#desc").val());
+                formD.append("csrfmiddlewaretoken",$("[name='csrfmiddlewaretoken']").val());
+                $.ajax({
+                    url:'/edit/submit/{{ user.name }}/',
+                    type:"POST",
+                    data:formD,
+                    processData:false,
+                    contentType:false,
+                    success: function (data) {
+                        if(data.state==1){
+                            alert("更新成功！");
+                        }else if(data.state==0){
+                            alert("更新失败！");
+                        }else{
+                            alert("密码错误！");
+                        }
+                    }
+                })
+            }
+        }
+    </script>
 <form action="form_action.asp" method="post" style="width:70%; margin-left: 20px">
-    <input type="text" class="form-control" style="margin-bottom: 10px" placeholder="昵称" name="username">
-    <input type="password" class="form-control" style="margin-bottom: 10px" placeholder="邮箱" name="password">
-    <input type="password" class="form-control" style="margin-bottom: 10px" placeholder="旧密码" name="password">
-    <input type="password" class="form-control" style="margin-bottom: 10px" placeholder="新密码" name="password">
-    <input type="password" class="form-control" style="margin-bottom: 10px" placeholder="确认密码" name="password">
-    <input type="password" class="form-control" style="margin-bottom: 10px" placeholder="头像" name="password">
-    <input type="password" class="form-control" style="margin-bottom: 10px" placeholder="个人简介" name="password">
-    <button class="btn btn-lg btn-primary btn-block" type="submit" style="margin:5px; width:70px">提交</button>
+    {% csrf_token %}
+    <lable>昵称</lable><input type="text" class="form-control" style="margin-bottom: 10px" value="{{user.nickname}}" id="username" required>
+    <lable>邮箱</lable><input type="text" class="form-control" style="margin-bottom: 10px" value="{{user.email}}" id="email" required>
+    <lable>旧密码</lable><input type="password" class="form-control" style="margin-bottom: 10px"  id="password1" required>
+    <lable>新密码</lable><input type="password" class="form-control" style="margin-bottom: 10px" placeholder="若不想更改必须输入原密码" id="password2" required>
+    <lable>确认密码</lable><input type="password" class="form-control" style="margin-bottom: 10px"  id="password3" required>
+    <lable>头像</lable><input type="text" class="form-control" style="margin-bottom: 10px" value="{{user.avatar}}" id="avatar" required>
+    <lable>个人介绍</lable><input type="text" class="form-control" style="margin-bottom: 10px" value="{{user.description}}" id="desc" required>
+    <button class="btn btn-lg btn-primary btn-block" type="button" onclick="f1()" style="margin:5px; width:70px">提交</button>
 </form>
 {% endblock %}

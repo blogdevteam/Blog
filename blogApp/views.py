@@ -30,12 +30,15 @@ def getUserByCOOKIE(cook):
 #注册
 def regist(req):
     if req.method == 'POST':
-        uf1 = ReForm(req.POST)
-        if uf1.is_valid():
-            #获得表单数据
-            username = uf1.cleaned_data['username']
-            password1 = uf1.cleaned_data['password1']
-            password2 = uf1.cleaned_data['password2']
+
+            username = req.POST.get('username',None)
+            password1 = req.POST.get('password', None)
+            password2 = req.POST.get('repeatpassword', None)
+
+            ceshi = User.objects.filter(name = username)
+            if ceshi:
+                return HttpResponse('账号重复')
+
             if(password1!=password2):
                 return HttpResponse('regist failed!!')
             #添加到数据库
@@ -48,7 +51,7 @@ def regist(req):
             storepassword = hl.hexdigest()
 
             User.objects.create(name= username,password=storepassword,regist_time=time_now,nickname=username)
-            response=HttpResponseRedirect('blogApp/BlogContent.html')
+            response=HttpResponseRedirect('blogApp/index.html')
 
             auser = User.objects.filter(name__exact=username, password__exact=storepassword)
             loginuserid1 = auser.values_list('user_id', flat=True)
@@ -72,9 +75,7 @@ def regist(req):
 
             return response
 
-    else:
-        uf1 = ReForm()
-    return render(req, 'blogApp/register.html', {'uf1': uf1})
+    return render(req, 'blogApp/regist.html')
 
 #登陆
 def login(req):
@@ -437,22 +438,39 @@ def submit(req,username):
     if req.method == 'POST':
         nickname = req.POST.get('nickname')
         email = req.POST.get('email')
-        avatar = req.FILES.get('avatar')
-        print(avatar)
+        password = req.POST.get('password1')
+        print(password)
+        avatar = req.POST.get('avatar')
+        password1 = req.POST.get('password2')
+        print(password1)
+        desc = req.POST.get('desc')
+        auser = User.objects.get(name=username)
 
-        try:
-            auser=User.objects.get(name=username)
-            auser.nickname=nickname
-            auser.email=email
-            #auser.avatar=avatar
-            data = {'state': 1}
-            auser.save()
-        except:
-            data = {'state': 0}
-        print(data)
+        import hashlib
+        hl = hashlib.md5()
+        hl.update(password.encode(encoding='utf-8'))
+        password = hl.hexdigest()
+
+        if(password!=auser.password):
+            data={'states':2}
+        else:
+            try:
+                auser = User.objects.get(name=username)
+                auser.nickname = nickname
+                auser.email = email
+                auser.avatar=avatar
+                auser.description=desc
+                hl = hashlib.md5()
+                hl.update(password1.encode(encoding='utf-8'))
+                password1 = hl.hexdigest()
+
+                auser.password=password1
+                data = {'state': 1}
+                auser.save()
+            except:
+                data = {'state': 0}
         return JsonResponse(data)
-
-    return render(req, 'blogApp/personalInfoEdit.html',)
+    return render(req, 'blogApp/editInfo.html',)
 
 #显示个人信息
 def info(req,username):
@@ -480,7 +498,6 @@ from django.core.paginator import Paginator
 from django import forms
 
 from django.utils import timezone
-
 
 class CommentForm(forms.Form):
     comment_content = forms.CharField()
@@ -511,47 +528,25 @@ def get_user_blog_list(user_id):
     global count
     flag = False
     count = 0
-    blog_list = []
+
     try:
         result = Blog.objects.filter(user_id=user_id)
-        for i in result:
-            time = i.create_time
-            title = i.title
-            content = i.content
-            link = get_blogcontent_link(i.blog_id)
-            cate_name = Category.objects.get(cate_id=i.cate_id).cate_name
-            temp = {'title': title,
-                    'content': content,
-                    'time': time,
-                    'blog_link': link,
-                    'cate_name': cate_name}
-            blog_list.append(temp)
-            count +=1
-        if count != 0:
-            flag = True
+        flag =True
     except Blog.DoesNotExist:
-        blog_list = None
         flag = False
-    return blog_list, flag
+    return result, flag
 
 
 def get_user_cate(id):
     cate_list = []
     global flag
-    global count
     flag = False
-    count = 0
     try:
         for i in Blog.objects.filter(user_id=id):
-            content = {'cate_name': (Category.objects.get(cate_id=i.cate_id)).cate_name,
-                       'link': '-'}
-            cate_list.append(content)
-            count += 1
+            cate_list.append(Category.objects.get(cate_id=i.cate_id))
         cate_list = remove_the_same(cate_list)
-        if count != 0:
-            flag = True
+        flag = True
     except Blog.DoesNotExist:
-        cate_list = None
         flag = False
     return cate_list, flag
 
@@ -568,60 +563,51 @@ def get_user_tag(id):
     try:
         for i in Blog.objects.filter(user_id=id):
             for j in BlogTag.objects.filter(blog_id=i.blog_id):
-                content = {'name': (Tag.objects.get(tag_id=j.tag_id)).tag_name, 'link': '-'}
-                tag_list.append(content)
+                tag_list.append(Tag.objects.get(tag_id=j.tag_id))
                 count += 1
             if count > 15:
                 break
         if count != 0:
             flag = True
-        tag_list = remove_the_same(tag_list)
     except Blog.DoesNotExist:
         tag_list = None
         flag = False
+    tag_list=remove_the_same(tag_list)
     return tag_list, flag
 
 
 def get_user_file(id):
-    global file_list
-
-    file_list = []
-    try:
-        for i in Blog.objects.filter(user_id=id):
-            time = str(i.create_time)
-            time = time[0:time.rfind(' ')]
-            content = {'file': time, 'link':'-'}
-            file_list.append(content)
-        file_list = remove_the_same(file_list)
-    except Blog.DoesNotExist:
-        file_list = None
-
-    return file_list
+    return Blog.objects.filter(user_id=id)
 
 
 def get_blog_user(blog_id):
     blog = Blog.objects.get(blog_id=blog_id)
     user = User.objects.get(user_id=blog.user_id)
-    return user.user_id, user.name
+    return user
 
 
 def personalIndex(request, username):
     judegcookie = request.COOKIES.get('userid',None)
+    user = User.objects.get(name=username)
     if (judegcookie == None):
         currentUser = None
-        user = User.objects.get(name = username)
 
-        dic = {}
-        dic["currentUser"] = currentUser
-        dic["user"] = user
-        return render(request, 'blogApp/personalIndex.html', dic)
+        context = get_personal_page_content(request, user.user_id)
+        context["currentUser"] = currentUser
+        context["user"] = user
+        context["follow_num"]
+        return render(request, 'blogApp/personalIndex.html', context)
 
+    cock = request.COOKIES.get('userid', None)
+
+    currentUser = getUserByCOOKIE(cock)
+    print("++++++++++++++++++++++++++++++++++++++")
     user_id, flag = get_user_id(username)
     global follow_form
     global flo_flag
     global follow_user_id
     global followed_user_id
-
+    follow_user_id = getUserByCOOKIE(cock).user_id
     if flag:
         if request.method == "POST":
 
@@ -630,13 +616,8 @@ def personalIndex(request, username):
             if follow_form.is_valid():
                 followed_user_id = user_id
 
-                cock = request.COOKIES.get('userid',None)
-                follow_user_id = getUserByCOOKIE(cock).user_id
-                print("被关注" + str(followed_user_id))
-                print("关注" + str(follow_user_id))
+
                 flo_flag = whether_follow(followed_user_id, follow_user_id)
-
-
                 # follow_user_id = getUserByCOOKIE(request.COOKIES.get('userid', ''))
                 if not flo_flag:
                     Follow.objects.create(fld_user_id=followed_user_id, user_id=follow_user_id)
@@ -647,11 +628,10 @@ def personalIndex(request, username):
                     flo_flag = False
             print(flo_flag)
             context = get_personal_page_content(request, user_id)
-            context['flo_flag'] = flo_flag
+            context['alreadyFollowed'] = flo_flag
             context['follow_form'] = follow_form
 
-            cock = request.COOKIES.get('userid', None)
-            currentuser = getUserByCOOKIE(cock)
+            currentuser = getUserByCOOKIE(request.COOKIES.get('userid', None))
             user = User.objects.get(name=username)
             context['currentUser'] = currentuser
             context['user'] = user
@@ -671,7 +651,7 @@ def personalIndex(request, username):
 
             context = get_personal_page_content(request, user_id)
             # print(flo_flag)
-            context['flo_flag'] = flo_flag
+            context['alreadyFollowed'] = flo_flag
             context['follow_form'] = follow_form
 
             cock = request.COOKIES.get('userid', None)
@@ -695,6 +675,7 @@ def get_user_id(user_name):
 
 def get_personal_page_content(request, user_id):
     blog_list, blog_flag = get_user_blog_list(user_id)
+    print(blog_list)
     cate_list, cate_flag = get_user_cate(user_id)
     tag_list, tag_flag = get_user_tag(user_id)
     file_list = get_user_file(user_id) if blog_flag else []
@@ -722,16 +703,14 @@ def get_personal_page_content(request, user_id):
             'nickname': user.nickname,
             'regist_time': user.regist_time,
             'follow_num': follow_num,
-            'cate_list': cate_list,
+            'categoryList': cate_list,
             'cate_flag': cate_flag,
-            'tag_list': tag_list,
-            'tag_flag': tag_flag,
-            'file_list': file_list,
-            'file_flag': blog_flag}
+            'tagList': tag_list,
+            'tag_flag': tag_flag}
 
 
 def get_personalpage_link(user_name):
-    return 'http://127.0.0.1:8000/personalpage/' + str(user_name) + '/'
+    return 'http://127.0.0.1:8000/personalIndex/' + str(user_name) + '/'
 
 
 def get_blogcontent_link(blog_id):
@@ -740,76 +719,88 @@ def get_blogcontent_link(blog_id):
 
 
 def blog_content(request, blog_id):
-
+    global user
+    global currentUser
     global comment_form
     global follow_form
     global flo_flag
     global fav_flag
-    global follow_user_id
-    global followed_user_id
 
-   #游客访问的话会出现问题，结合前端更改吧😄
+    user = get_blog_user(blog_id)
 
-    followed_user_id,name = get_blog_user(blog_id)
-    #follow_user_id = '111119'
-    flo_flag = whether_follow(followed_user_id, follow_user_id)
-    fav_flag = whether_fav(blog_id, follow_user_id)
+    judegcookie = request.COOKIES.get('userid', None)
+    if (judegcookie == None):
+        currentUser = None
+        context = get_content(request, blog_id)
+        context["currentUser"] = currentUser
+        context["user"] = user
+        context["follow_num"]
+        return render(request, 'blogApp/BlogContent.html', context)
 
+    cock = request.COOKIES.get('userid', None)
+    currentUser = getUserByCOOKIE(cock)
+
+    flo_flag = whether_follow(user.user_id, currentUser.user_id)
+    fav_flag = whether_fav(blog_id, currentUser.user_id)
     if request.method == "POST":
 
         comment_form = CommentForm(request.POST)
-        follow_form = FollowForm({'follow_user_id': follow_user_id,
-                                  'followed_user_id': followed_user_id})
+        follow_form = FollowForm({'follow_user_id': currentUser.user_id,
+                                  'followed_user_id': user.user_id})
         fav_form = FavouriteForm({'blog_id': blog_id,
-                                  'user_id': follow_user_id})
+                                  'user_id': currentUser.user_id})
         if fav_form.is_valid():
             if not fav_flag:
-                Favourite.objects.create(blog_id=blog_id, user_id=follow_user_id)
+                Favourite.objects.create(blog_id=blog_id, user_id=currentUser.user_id)
                 fav_flag = True
             else:
-                t = Favourite.objects.get(blog_id=blog_id, user_id=follow_user_id)
+                t = Favourite.objects.get(blog_id=blog_id, user_id=currentUser.user_id)
                 t.delete()
                 fav_flag = False
 
         if follow_form.is_valid():
 
-            #follow_user_id = getUserByCOOKIE(request.COOKIES.get('userid', ''))
             if not flo_flag:
-                Follow.objects.create(fld_user_id=followed_user_id, user_id=follow_user_id)
+                Follow.objects.create(fld_user_id=user.user_id, user_id=currentUser.user_id)
                 flo_flag = True
             else:
-                t = Follow.objects.get(fld_user_id=followed_user_id, user_id=follow_user_id)
+                t = Follow.objects.get(fld_user_id=user.user_id, user_id=currentUser.user_id)
                 t.delete()
                 flo_flag = False
 
-        if comment_form.is_valid():
+        if request.POST.get('comment-text'):
             comment_time = timezone.now()
-            comment_content = comment_form.cleaned_data['comment_content']
+            comment_content = request.POST.get('comment-text', None)
             comment_blog_id = blog_id
-            Comment.objects.create(content=comment_content, time=comment_time, blog_id=comment_blog_id, user_id=follow_user_id)
+            Comment.objects.create(content=comment_content, time=comment_time, blog_id=comment_blog_id,
+                               user_id=currentUser.user_id)
 
         context = get_content(request, blog_id)
 
-        context['flo_flag'] = flo_flag
-        context['fav_flag'] = fav_flag
+        context['alreadyFollowed'] = flo_flag
+        context['alreadyFavourite'] = fav_flag
         context['comment_form'] = comment_form
         context['follow_form'] = follow_form
         context['fav_form'] = fav_form
+        context["currentUser"] = currentUser
+        context["user"] = user
 
-        return render(request, 'BlogContent.html', context)
+        return render(request, 'blogApp/BlogContent.html', context)
     else:
         comment_form = CommentForm()
         follow_form = FollowForm()
         fav_form = FavouriteForm()
 
         context = get_content(request, blog_id)
-
-        context['flo_flag'] = flo_flag
-        context['fav_flag'] = fav_flag
+        print(context)
+        context['alreadyFollowed'] = flo_flag
+        context['alreadyFavourite'] = fav_flag
         context['comment_form'] = comment_form
         context['follow_form'] = follow_form
         context['fav_form'] = fav_form
-        return render(request, 'BlogContent.html', context)
+        context["currentUser"] = currentUser
+        context["user"] = user
+        return render(request, 'blogApp/BlogContent.html', context)
 
 
 def whether_follow(fld_user_id, user_id):
@@ -836,31 +827,22 @@ def whether_fav(blog_id, user_id):
 
 def get_content(request, blog_id):
     context = {}
-    # context['comment_form'] = comment_form
-    id, name = get_blog_user(blog_id=blog_id)
-    user = User.objects.get(user_id=id)
     blog = Blog.objects.get(blog_id=blog_id)
+    user = get_blog_user(blog_id)
     blog.view_num += 1
     blog.save()
-    context['title'] = blog.title
-    context['content'] = blog.content
-    context['time'] = blog.create_time
-    context['view_num'] = blog.view_num
-
-    context['nickname'] = user.nickname
-    context['regist_time'] = user.regist_time
-    context['follow_num'] = (Follow.objects.filter(fld_user_id=id)).count()
-    context['user_link'] = get_personalpage_link(name)
-
+    context['blog'] = blog
+    context['tagList'] = Tag.objects.filter(tag_id=BlogTag(blog_id=blog_id).tag_id)
     # get the all categories the user have used
-    context['cate_list'], context['cate_flag'] = get_user_cate(id)
+    context['categoryList'], context['cate_flag'] = get_user_cate(user.user_id)
 
     # get the first 15 tags the user have used
-    context['tag_list'], context['tag_flag'] = get_user_tag(id)
-
+    context['tagList'], context['tag_flag'] = get_user_tag(user.user_id)
+    context['follow_num'] = (Follow.objects.filter(fld_user_id=user.user_id)).count()
     # get the all time when the user wrote blog
-    context['file_list'] = get_user_file(id)
+
     comment_list, flag = get_blog_comment(blog_id)
+
     global paginator
     global number
     if comment_list is not None:
@@ -877,27 +859,29 @@ def get_content(request, blog_id):
         context['page'] = number
         context['paginator'] = paginator
         context['flag'] = flag
-        return context
+    return context
 
 
 def get_blog_comment(blog_id):
     global context
-    context = []
     global comment_list
     global flag
-    flag = "True"
+    flag = False
     try:
         comment_list = Comment.objects.filter(blog_id=blog_id)
-        for i in comment_list:
-            user_name = User.objects.get(user_id=i.user_id).nickname
-            temp={'comment_user': user_name, 'content': i.content, 'time': i.time}
-            context.append(temp)
-        flag = "False"
+        flag = True
     except Comment.DoesNotExist:
-        context = None
+        flag = False
+    return comment_list, flag
 
-    #context = remove_the_same(context)
-    return context, flag
+def info(request, username):
+    user = User.objects.get(name=username)
+    follow_num = Follow.objects.filter(user_id=user.user_id).count()
+    followed_num = Follow.objects.filter(fld_user_id=user.user_id).count()
+    return render(request, 'blogApp/info.html', {'follow_num': follow_num,
+                                                 'followed_num': followed_num,
+                                                 'user': user})
+
 
 
 def home_page(request):

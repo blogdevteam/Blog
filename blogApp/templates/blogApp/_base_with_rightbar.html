@@ -22,20 +22,30 @@ rightbar:
         <h4>
             博主
         </h4>
-        <div style="text-align:center">
-            <img src="https://raw.githubusercontent.com/oi-songer/oi-songer.github.io/master/portal.jpg" height="100px" width="100px" cclass="img-thumbnail">
+        <div style="text-align:center; padding-bottom: 40px">
+            <img src="{{ user.avatar }}" height="100px" width="100px" cclass="img-thumbnail">
             <br>
             <br>
-            <h5><a href="#">博主昵称示例</a></h5>
-            <h5><a href="/personalIndex/{{user.username}}">{{user.nickname}}</a></h5>
+            <h5><a href="/personalIndex/{{user.name}}/">{{user.nickname}}</a></h5>
             <a href="/info/{{user.name}}"> 查看他的详细信息 </a>
 
             <p>博文数：{{user.blog_set.count}}</p>
-            <p>粉丝数：{{user.follow_set.count}}</p>
+            <p>粉丝数：{{follow_num}}</p>
 
-            {% if currentUser.user_id == user.user_id %} {% elif alreadyFollowed %}
-            <button type="button" class="btn btn-danger" name="follow"> 取消关注 </button> {% else %}
-            <button type="button" class="btn btn-info" name="cancelFollow"> 关注 </button> {% endif %}
+            <form  style="text-align:center" action="" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                            {% if  alreadyFollowed %}
+                                <input class ="btn btn-primary"
+                                       type="submit"
+                                       style="width:80px;float: right;margin-bottom: 10px"
+                                       value="取消关注"/>
+                            {% endif %}
+                            {% if not alreadyFollowed%}
+                                <input class ="btn btn-primary"
+                                       type="submit" style="width:80px;float: right;margin-bottom: 10px"
+                                       value="关注"/>
+                            {% endif %}
+                </form>
 
         </div>
 
@@ -46,7 +56,6 @@ rightbar:
         </h4>
 
         <ol class="cateogryList">
-            <a href="/search?userid={{user.userid}}&category={{category.cate_id}}"> 分类样例 </a> </li>
 
             <!--category-->
             {% for category in categoryList %}
@@ -61,12 +70,10 @@ rightbar:
             标签
         </h4>
         <h4>
-            <span class="label label-info"> <a class="label-link" href="/search?userid={{userid}}&tagid={{tag.tag_id}}">标签样例</a>  </span>
-
             <!--tag-->
             {% for tag in tagList %}
-            <span class="label label-info"> 
-                <a class="label-link" href="/search?userid={{userid}}&tagid={{tag.tag_id}}">{{tag.tag_name}}</a> 
+            <span class="label label-info" style="margin:5px">
+                <a class="label-link" href="/search?userid={{user.user_id}}&tagid={{tag.tag_id}}">{{tag.tag_name}}</a>
             </span> {% endfor %}
 
         </h4>
