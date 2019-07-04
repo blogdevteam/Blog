@@ -27,43 +27,35 @@ blogContent:
             <h5>
                 {% for tag in tagList %}
                 <span class="label label-success" style="margin:5px">
-                    <a class="label-link" href="/search?userid=user.user_id&tagid=tag.tag_id">
+                    <a class="label-link" href="/search?userid={{user.user_id}}&tagid={{tag.tag_id}}">
                         {{tag.tag_name}}</a>
-                </span>
-            {% endfor %}
+                </span> {% endfor %}
             </h5>
         </p>
     </div>
     <div style="word-break:break-all; padding-bottom:20px;">
-            {{ blog.toHTML | safe }}
+        {{ blog.toHTML | safe }}
     </div>
 
     <div style="text-align:right">
         <div style="float:left">
-        {% ifequal currentUser.user_id 1 %}
-        <button type="button" class="btn btn-danger" name="deleteBlog">删除该博客</button>
-        {% endifequal %}
+            {% ifequal currentUser.user_id 1 %}
+            <form>
+                <button type="submit" class="btn btn-danger" name="deleteBlog">删除该博客</button>
+            </form>
+            {% endifequal %}
         </div>
 
         收藏数：{{blog.favourite_set.count}}
         <br>
-        <form  style="text-align:center" action="" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {% if  alreadyFavourite %}
-                <input class ="btn btn-primary"
-                       type="submit"
-                       style="width:80px;float: right;margin-bottom: 10px"
-                       value="取消收藏"/>
-            {% endif %}
-            {% if not alreadyFavourite%}
-                <input class ="btn btn-primary"
-                       type="submit" style="width:80px;float: right;margin-bottom: 10px"
-                       value="收藏"/>
-            {% endif %}
+        <form style="text-align:center" action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %} {% if alreadyFavourite %}
+            <input class="btn btn-primary" type="submit" style="width:80px;float: right;margin-bottom: 10px" value="取消收藏" /> {% endif %} {% if not alreadyFavourite%}
+            <input class="btn btn-primary" type="submit" style="width:80px;float: right;margin-bottom: 10px" value="收藏" /> {% endif %}
         </form>
 
     </div>
-    
+
 </article>
 
 {% block comment %}
@@ -71,67 +63,54 @@ blogContent:
 <div style="padding-top:10px; margin-bottom:20px">
     <form method="POST">
         {% csrf_token %}
-        <input type="text" style="width:100%; min-height:100px; padding-bottom: 10px" name = "comment-text">
+        <input type="text" style="width:100%; min-height:100px; padding-bottom: 10px" name="comment-text">
         <input style="margin-left: 92%; margin-top: 5px;" type="submit" class="btn btn-info" value="评论">
     </form>
 </div>
 
-    {% if not flag %}
-        <p>暂无评论</p>
-    {% endif %}
-    {% for comment in page.object_list %}
-        <div class="panel panel-default" style="margin-top:5px; margin-bottom:5px">
-            <div class="panel-heading">
-                <a href="/personalIndex/{{comment.user.name}}">{{comment.user.name}}</a> in {{comment.time}}
-            </div>
-            <div class="panel-body">
-                {{comment.content}}
-            </div>
-            </div>
-    {% endfor %}
+{% if not flag %}
+<p>暂无评论</p>
+{% endif %} {% for comment in page.object_list %}
+<div class="panel panel-default" style="margin-top:5px; margin-bottom:5px">
+    <div class="panel-heading">
+        <a href="/personalIndex/{{comment.user.name}}">{{comment.user.name}}</a> in {{comment.time}}
+    </div>
+    <div class="panel-body">
+        {{comment.content}}
+    </div>
+</div>
+{% endfor %}
 
-    <section>
-            <ul class="pagination">
-            {# 如果当前页还有上一页 #}
-            {% if page.has_previous %}
-                <li>
-                    {# 点击a标签，跳转到上一页链接 ?index  为地址后面拼接的参数 #}
-                    <a href="?index={{page.previous_page_number}}">上一页</a>
-                </li>
-            {% else %}
-                {# 如果没有上一页， 则上一页按钮不可点击 #}
-                <li class="disabled">
-                    <a href="#">上一页</a>
-                </li>
-            {% endif %}
-
-            {% for page_number in paginator.page_range %}
-                {# 获取当前页的页码 #}
-                {% if page_number == page.number %}
-                    {# 如果是当前页的话，选中 #}
-                    <li class="active">
-                        <a href="?index={{page_number}}">{{page_number}}</a>
-                    </li>
-                {% else %}
-                    <li>
-                        <a href="?index={{page_number}}">{{page_number}}</a>
-                    </li>
-                {% endif %}
-            {% endfor %}
-
-            {% if page.has_next %}
-                <li>
-                    <a href="?index={{page.next_page_number}}">下一页</a>
-                </li>
-            {% else %}
-            <li class="disabled">
-                <a href="#">下一页</a>
-            </li>
-            {% endif %}
-            </ul>
-    </section>
+<section>
+    <ul class="pagination">
+        {# 如果当前页还有上一页 #} {% if page.has_previous %}
+        <li>
+            {# 点击a标签，跳转到上一页链接 ?index 为地址后面拼接的参数 #}
+            <a href="?index={{page.previous_page_number}}">上一页</a>
+        </li>
+        {% else %} {# 如果没有上一页， 则上一页按钮不可点击 #}
+        <li class="disabled">
+            <a href="#">上一页</a>
+        </li>
+        {% endif %} {% for page_number in paginator.page_range %} {# 获取当前页的页码 #} {% if page_number == page.number %} {# 如果是当前页的话，选中 #}
+        <li class="active">
+            <a href="?index={{page_number}}">{{page_number}}</a>
+        </li>
+        {% else %}
+        <li>
+            <a href="?index={{page_number}}">{{page_number}}</a>
+        </li>
+        {% endif %} {% endfor %} {% if page.has_next %}
+        <li>
+            <a href="?index={{page.next_page_number}}">下一页</a>
+        </li>
+        {% else %}
+        <li class="disabled">
+            <a href="#">下一页</a>
+        </li>
+        {% endif %}
+    </ul>
+</section>
 
 
-{% endblock %}
-
-{% endblock %}
+{% endblock %} {% endblock %}

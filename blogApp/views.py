@@ -119,16 +119,10 @@ def login(req):
             return response
         else:
                 #比较失败，还在login
-            return HttpResponseRedirect('/Login')
+            return HttpResponseRedirect('/login')
     else:
         uf = UserForm()
     return render(req,'blogApp/Login.html')
-
-# 登陆成功
-# def index(req):
-#     userid = getUserByCOOKIE( req.COOKIES.get('userid', '') ).user_id
-    
-#     return render_to_response('blogApp/BlogContent.html' ,{'username':userid})
 
 #退出
 def logout(req):
