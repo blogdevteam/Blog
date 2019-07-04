@@ -178,11 +178,11 @@ def search(req):
         dic['keywords'].append(req.GET['keywords'])
 
     if ('categoryid' in req.GET and not req.GET['categoryid'] == ''):
-        queryList = queryList.filter(category__id = req.GET['categoryid'])
+        queryList = queryList.filter(category_id = req.GET['categoryid'])
         dic['categoryid'] = req.GET['category_id']
     
     if ('userid' in req.GET and not req.GET['userid'] == ''):
-        queryList = queryList.filter(user__id = req.GET['userid'])
+        queryList = queryList.filter(user_id = req.GET['userid'])
         dic['userid'] = req.GET['userid']
 
     if ('tagid' in req.GET and not req.GET['tagid'] == ''):
