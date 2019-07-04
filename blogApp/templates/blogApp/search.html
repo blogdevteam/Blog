@@ -24,9 +24,7 @@
 
 <!--keywords-->
 
-{% if keywords != None %} 关键字：{% for keyword in keywords %}
-<p>{{keyword}}</p>
-{% endfor %} {% endif %}
+{% if keywords != None %} 关键字：{{keywords}} {% endif %}
 
 <!--blogList-->
 {% if blogList == None %} 无匹配结果 {% else %} {% for blog in blogList %}

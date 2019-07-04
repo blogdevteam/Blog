@@ -798,6 +798,7 @@ def blog_content(request, blog_id):
         context["currentUser"] = currentUser
         context["user"] = user
         context["blogTagList"] = list(map(lambda x: x.tag, list(Blog.objects.get(blog_id = blog_id).blogtag_set.all()) ))
+        print(context["blogTagList"])
 
         return render(request, 'blogApp/BlogContent.html', context)
     else:
@@ -815,6 +816,7 @@ def blog_content(request, blog_id):
         context["currentUser"] = currentUser
         context["user"] = user
         context["blogTagList"] = map(lambda x: x.tag, list(Blog.objects.get(blog_id = blog_id).blogtag_set.all()) )
+        print(context["blogTagList"])
 
         return render(request, 'blogApp/BlogContent.html', context)
 
