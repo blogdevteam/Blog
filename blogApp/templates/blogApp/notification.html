@@ -24,7 +24,7 @@
         <br>
     </div>
     <div class="panel-body">
-        {{notification.content}}
+        {{notification.content | safe}}
     </div>
 </div>
 {% endfor %} {% endif %} {% endblock %}

@@ -749,10 +749,14 @@ def blog_content(request, blog_id):
         if (blogtodel!=None):
             Blog.objects.filter(blog_id = blogtodel).delete()
             response = JsonResponse({"result": True})
+            str = "您的博客 %s 已被管理员删除" % Blog.objects.get(blog_id=blog_id).title
+            Notification.objects.create(user_id=user.user_id, content=str)
             return response
 
         if (comtodel!=None):
             Comment.objects.filter(comment_id =comtodel).delete()
+            str = '您的在 <a href="/blogcontent/%d"> %s </a> 的评论已被管理员删除' % (blog_id, Blog.objects.get(blog_id=blog_id).title)
+            Notification.objects.create(user_id=user.user_id, content=str)
             response = JsonResponse({"result": True})
             return response
 
@@ -927,7 +931,11 @@ def notify(req,username):
         dic = {}
         dic['currentUser'] = currentUser
         dic['user'] = user
-        dic['notificationList'] = notificationsList
+        dic['notificationList'] = list(notificationsList)
+
+        for noti in notificationsList:
+            noti.unread = False
+            noti.save()
 
         return render(req,'blogApp/notification.html',dic)
     else:
