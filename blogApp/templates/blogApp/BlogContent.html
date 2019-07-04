@@ -49,8 +49,8 @@ blogContent:
         <br>
         <form style="text-align:center" action="" method="post" enctype="multipart/form-data">
             {% csrf_token %} {% if alreadyFavourite %}
-            <input class="btn btn-primary" type="submit" style="width:80px;float: right;margin-bottom: 10px" value="取消收藏" /> {% endif %} {% if not alreadyFavourite%}
-            <input class="btn btn-primary" type="submit" style="width:80px;float: right;margin-bottom: 10px" value="收藏" /> {% endif %}
+            <input class="btn btn-primary" type="submit" style="width:80px;float: right;margin-bottom: 10px" name="favourite" value="取消收藏" /> {% endif %} {% if not alreadyFavourite%}
+            <input class="btn btn-primary" type="submit" style="width:80px;float: right;margin-bottom: 10px" name="favourite" value="收藏" /> {% endif %}
         </form>
 
     </div>

@@ -605,13 +605,14 @@ def personalIndex(request, username):
     global follow_user_id
     global followed_user_id
     follow_user_id = getUserByCOOKIE(cock).user_id
+
     if flag:
         if request.method == "POST":
 
             follow_form = FollowForm({'follow_user_id': follow_user_id,
                                       'followed_user_id': followed_user_id})
             if follow_form.is_valid():
-                followed_user_id = user_id
+                # followed_user_id = user_id
 
 
                 flo_flag = whether_follow(followed_user_id, follow_user_id)
@@ -760,7 +761,7 @@ def blog_content(request, blog_id):
                                   'followed_user_id': user.user_id})
         fav_form = FavouriteForm({'blog_id': blog_id,
                                   'user_id': currentUser.user_id})
-        if fav_form.is_valid():
+        if request.POST.get("favourite", None):
             if not fav_flag:
                 Favourite.objects.create(blog_id=blog_id, user_id=currentUser.user_id)
                 fav_flag = True
@@ -769,7 +770,7 @@ def blog_content(request, blog_id):
                 t.delete()
                 fav_flag = False
 
-        if follow_form.is_valid():
+        if request.POST.get("follow", None):
 
             if not flo_flag:
                 Follow.objects.create(fld_user_id=user.user_id, user_id=currentUser.user_id)

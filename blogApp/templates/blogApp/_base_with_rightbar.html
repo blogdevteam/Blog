@@ -34,8 +34,8 @@ rightbar:
 
             <form style="text-align:center" action="" method="post" enctype="multipart/form-data">
                 {% csrf_token %} {% if alreadyFollowed %}
-                <input class="btn btn-primary" type="submit" style="width:80px;float: right;margin-bottom: 10px" value="取消关注" /> {% endif %} {% if not alreadyFollowed%}
-                <input class="btn btn-primary" type="submit" style="width:80px;float: right;margin-bottom: 10px" value="关注" /> {% endif %}
+                <input class="btn btn-primary" type="submit" style="width:80px;float: right;margin-bottom: 10px" name="follow" value="取消关注" /> {% endif %} {% if not alreadyFollowed%}
+                <input class="btn btn-primary" type="submit" style="width:80px;float: right;margin-bottom: 10px" name="follow" value="关注" /> {% endif %}
             </form>
 
         </div>
@@ -60,10 +60,10 @@ rightbar:
         <h4>
             标签
         </h4>
-        <h4 style="word-break:break-all;">
+        <h4 style="word-break:break-all; line-height:30px;">
             <!--tag-->
             {% for tag in tagList %}
-            <span class="label label-info" style="margin:5px">
+            <span class="label label-info" style="margin:5px;">
                 <a class="label-link" href="/search?userid={{user.user_id}}&tagid={{tag.tag_id}}">{{tag.tag_name}}</a>
             </span> {% endfor %}
 
