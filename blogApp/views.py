@@ -278,7 +278,7 @@ def edit(req,blogid):
                     everyid = Tag.objects.get(tag_name=i).tag_id
                     BlogTag.objects.create(blog_id=blogid, tag_id=everyid)
         user = User.objects.get(user_id=c_userid)
-        return render(req, 'blogApp/edit.html', {'catset': catset, 'reblog': reblog, 'blogid': blogid,'catename':catename,'str': str,'user':user})
+        return render(req, 'blogApp/edit.html', {'catset': catset, 'reblog': reblog, 'blogid': blogid,'catename':catename,'str': str,'user':user ,'currentUser':user})
 
     #等于零，新的
     else:
@@ -887,11 +887,13 @@ def get_blog_comment(blog_id):
     return comment_list, flag
 
 def info(request, username):
+    currentUser = getUserByCOOKIE(request.COOKIE.get("userid", None))
     user = User.objects.get(name=username)
     follow_num = Follow.objects.filter(user_id=user.user_id).count()
     followed_num = Follow.objects.filter(fld_user_id=user.user_id).count()
     return render(request, 'blogApp/info.html', {'follow_num': follow_num,
                                                  'followed_num': followed_num,
+                                                 'currentUser': currentUser,
                                                  'user': user})
 
 

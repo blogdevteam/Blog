@@ -32,20 +32,11 @@ rightbar:
             <p>博文数：{{user.blog_set.count}}</p>
             <p>粉丝数：{{follow_num}}</p>
 
-            <form  style="text-align:center" action="" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                            {% if  alreadyFollowed %}
-                                <input class ="btn btn-primary"
-                                       type="submit"
-                                       style="width:80px;float: right;margin-bottom: 10px"
-                                       value="取消关注"/>
-                            {% endif %}
-                            {% if not alreadyFollowed%}
-                                <input class ="btn btn-primary"
-                                       type="submit" style="width:80px;float: right;margin-bottom: 10px"
-                                       value="关注"/>
-                            {% endif %}
-                </form>
+            <form style="text-align:center" action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %} {% if alreadyFollowed %}
+                <input class="btn btn-primary" type="submit" style="width:80px;float: right;margin-bottom: 10px" value="取消关注" /> {% endif %} {% if not alreadyFollowed%}
+                <input class="btn btn-primary" type="submit" style="width:80px;float: right;margin-bottom: 10px" value="关注" /> {% endif %}
+            </form>
 
         </div>
 
@@ -69,7 +60,7 @@ rightbar:
         <h4>
             标签
         </h4>
-        <h4>
+        <h4 style="word-break:break-all;">
             <!--tag-->
             {% for tag in tagList %}
             <span class="label label-info" style="margin:5px">
