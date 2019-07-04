@@ -25,7 +25,7 @@ blogContent:
         <p>阅读量：{{blog.view_num}} 评论量：{{blog.comment_set.count}}</p>
         <p>
             <h5>
-                {% for tag in tagList %}
+                {% for tag in blogTagList %}
                 <span class="label label-success" style="margin:5px">
                     <a class="label-link" href="/search?userid={{user.user_id}}&tagid={{tag.tag_id}}">
                         {{tag.tag_name}}</a>
@@ -42,9 +42,7 @@ blogContent:
 
             {% ifequal currentUser.user_id 1 %}
 
-            <button  class="btn btn-danger"  name="deleteBlog" onclick="delblog({{blog.blog_id}})">删除该博客</button>
-
-            {% endifequal %}
+            <button class="btn btn-danger" name="deleteBlog" onclick="delblog( {{ blog.blog_id }} )">删除该博客</button> {% endifequal %}
         </div>
 
         收藏数：{{blog.favourite_set.count}}
@@ -76,14 +74,12 @@ blogContent:
     <div class="panel-heading">
         <a href="/personalIndex/{{comment.user.name}}">{{comment.user.name}}</a> in {{comment.time}}
     </div>
-<div style="float:right">
+    <div style="float:right">
 
-            {% ifequal currentUser.user_id 1 %}
+        {% ifequal currentUser.user_id 1 %}
 
-            <button  class="btn btn-danger"  name="deleteBlog" onclick="delcomment({{comment.comment_id}})">删除该评论</button>
-
-            {% endifequal %}
-        </div>
+        <button class="btn btn-danger" name="deleteBlog" onclick="delcomment({{comment.comment_id}})">删除该评论</button> {% endifequal %}
+    </div>
     <div class="panel-body">
         {{comment.content}}
     </div>
@@ -122,40 +118,38 @@ blogContent:
     </ul>
 </section>
 <script>
-function delblog(blogid) {
+    function delblog(blogid) {
         var post_data_delblog = {
-                "blogtodel": blogid,
-                csrfmiddlewaretoken: '{{ csrf_token }}'
-            };
-            $.ajax({
-                url: "/blogcontent/{{ blog.blog_id }}/",
-                type: "POST",
-                data: post_data_delblog,
-                success:function(data)
-         {
-             window.location.href = '/index/'
+            "blogtodel": blogid,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        };
+        $.ajax({
+            url: "/blogcontent/{{ blog.blog_id }}/",
+            type: "POST",
+            data: post_data_delblog,
+            success: function(data) {
+                window.location.href = '/index/'
             }
-            });
-            window.alert("删除成功")
+        });
+        window.alert("删除成功")
 
     }
 
-function delcomment(commentid) {
-    var post_data_comment = {
-                "comtodel": commentid,
-                csrfmiddlewaretoken: '{{ csrf_token }}'
-            };
-            $.ajax({
-                url: "/blogcontent/{{ blog.blog_id }}/",
-                type: "POST",
-                data: post_data_comment,
-                success:function()
-         {
-             window.location.href = "/blogcontent/{{ blog.blog_id }}/"
+    function delcomment(commentid) {
+        var post_data_comment = {
+            "comtodel": commentid,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        };
+        $.ajax({
+            url: "/blogcontent/{{ blog.blog_id }}/",
+            type: "POST",
+            data: post_data_comment,
+            success: function() {
+                window.location.href = "/blogcontent/{{ blog.blog_id }}/"
             }
-            });
+        });
 
 
     }
- </script>
+</script>
 {% endblock %} {% endblock %}
