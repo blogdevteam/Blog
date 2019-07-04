@@ -39,10 +39,11 @@ blogContent:
 
     <div style="text-align:right">
         <div style="float:left">
+
             {% ifequal currentUser.user_id 1 %}
-            <form>
-                <button type="submit" class="btn btn-danger" name="deleteBlog">删除该博客</button>
-            </form>
+
+            <button  class="btn btn-danger"  name="deleteBlog" onclick="delblog({{blog.blog_id}})">删除该博客</button>
+
             {% endifequal %}
         </div>
 
@@ -75,9 +76,18 @@ blogContent:
     <div class="panel-heading">
         <a href="/personalIndex/{{comment.user.name}}">{{comment.user.name}}</a> in {{comment.time}}
     </div>
+<div style="float:right">
+
+            {% ifequal currentUser.user_id 1 %}
+
+            <button  class="btn btn-danger"  name="deleteBlog" onclick="delcomment({{comment.comment_id}})">删除该评论</button>
+
+            {% endifequal %}
+        </div>
     <div class="panel-body">
         {{comment.content}}
     </div>
+
 </div>
 {% endfor %}
 
@@ -111,6 +121,41 @@ blogContent:
         {% endif %}
     </ul>
 </section>
+<script>
+function delblog(blogid) {
+        var post_data_delblog = {
+                "blogtodel": blogid,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            };
+            $.ajax({
+                url: "/blogcontent/{{ blog.blog_id }}/",
+                type: "POST",
+                data: post_data_delblog,
+                success:function(data)
+         {
+             window.location.href = '/index/'
+            }
+            });
+            window.alert("删除成功")
+
+    }
+
+function delcomment(commentid) {
+    var post_data_comment = {
+                "comtodel": commentid,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            };
+            $.ajax({
+                url: "/blogcontent/{{ blog.blog_id }}/",
+                type: "POST",
+                data: post_data_comment,
+                success:function()
+         {
+             window.location.href = "/blogcontent/{{ blog.blog_id }}/"
+            }
+            });
 
 
+    }
+ </script>
 {% endblock %} {% endblock %}

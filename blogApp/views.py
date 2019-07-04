@@ -350,7 +350,7 @@ def manage(req,username):
             reblogset = list(blogset)
         #传一个字典吧，分类和分类的个数传到前端,但是前端要用特别办法
         catedic = {}
-        cateset = Category.objects.filter()
+        cateset = Category.objects.filter(user_id = u_userid)
         recateset = list(cateset)
         for i in recateset:
             catedic[i.cate_name] = 0
@@ -737,6 +737,20 @@ def blog_content(request, blog_id):
     flo_flag = whether_follow(user.user_id, currentUser.user_id)
     fav_flag = whether_fav(blog_id, currentUser.user_id)
     if request.method == "POST":
+
+        blogtodel = request.POST.get('blogtodel',None)
+        comtodel = request.POST.get('comtodel',None)
+
+        if (blogtodel!=None):
+            Blog.objects.filter(blog_id = blogtodel).delete()
+            response = JsonResponse({"result": True})
+            return response
+
+        if (comtodel!=None):
+            Comment.objects.filter(comment_id =comtodel).delete()
+            response = JsonResponse({"result": True})
+            return response
+
 
         comment_form = CommentForm(request.POST)
         follow_form = FollowForm({'follow_user_id': currentUser.user_id,

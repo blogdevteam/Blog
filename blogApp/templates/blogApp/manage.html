@@ -23,9 +23,9 @@
                 <li>
                     {% for foo in recateset %}
                         {% if foo.cate_name == cate %}
-                            <a href="javascript:filtercate({{ foo.cate_id }})">
+                            <label >
                         {{ cate }}({{ value }})
-                        </a>
+                        </label>
                         {% endif %}
                     {% endfor %}
                 {% if value == 0 %}
