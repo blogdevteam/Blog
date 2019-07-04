@@ -417,9 +417,12 @@ def editInfo(req, username):
     else:
         currentUser = None
 
+    follow_num = Follow.objects.filter(user_id=user.user_id).count()
+    followed_num = Follow.objects.filter(fld_user_id = user.user_id).count()
+
     if (user.user_id == currentUser.user_id):
         return render(req, 'blogApp/editInfo.html',
-                      {'user':user,'currentUser':currentUser})
+                      {'user':user,'currentUser':currentUser, "follow_num": follow_num, "followed_num": followed_num})
     else:
         return HttpResponseRedirect('blogApp/error.html')
 
@@ -887,7 +890,7 @@ def get_blog_comment(blog_id):
     return comment_list, flag
 
 def info(request, username):
-    currentUser = getUserByCOOKIE(request.COOKIE.get("userid", None))
+    currentUser = getUserByCOOKIE(request.COOKIES.get("userid", None))
     user = User.objects.get(name=username)
     follow_num = Follow.objects.filter(user_id=user.user_id).count()
     followed_num = Follow.objects.filter(fld_user_id=user.user_id).count()

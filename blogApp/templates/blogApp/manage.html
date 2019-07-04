@@ -19,32 +19,22 @@
     </h2>
 
     <ul id="category-list">
-                {% for cate,value in catedic.items %}
-                <li>
-                    {% for foo in recateset %}
-                        {% if foo.cate_name == cate %}
-                            <label >
+        {% for cate,value in catedic.items %}
+        <li>
+            {% for foo in recateset %} {% if foo.cate_name == cate %}
+            <label>
                         {{ cate }}({{ value }})
-                        </label>
-                        {% endif %}
-                    {% endfor %}
-                {% if value == 0 %}
-                    {% for i in recateset %}
-                        {% if i.cate_name == cate %}
-                            <button class="btn btn-sm btn-info" onclick="delcate({{ i.cate_id }})">
+                        </label> {% endif %} {% endfor %} {% if value == 0 %} {% for i in recateset %} {% if i.cate_name == cate %}
+            <button class="btn btn-sm btn-info" onclick="delcate({{ i.cate_id }})">
                         删除
-                    </button>
-                        {% endif %}
-                    {% endfor %}
-
-                {% endif %}
-                </li>
-                {% endfor %}
-            </ul>
+                    </button> {% endif %} {% endfor %} {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
 
 
-            <input id = "cate" type="text" >
-            <input class="btn btn-info" onclick="addcate()" type="button" value="添加分类"  style="margin-left: 10px; margin-right: 10px">
+    <input id="cate" type="text">
+    <input class="btn btn-info" onclick="addcate()" type="button" value="添加分类" style="margin-left: 10px; margin-right: 10px">
 
 </div>
 
@@ -88,7 +78,7 @@
             {% for blog in blogList %}
             <tr>
                 <td style="width:40%">
-                    <a href='blogcontent/blog.blog_id/'>
+                    <a href='blogcontent/{{blog.blog_id}}/'>
                     {{blog.title}}
                     </a>
                 </td>
@@ -102,7 +92,7 @@
                     <a href="/edit/{{blog.blog_id}}"> 编辑 </a>
                 </td>
                 <td>
-                    <button class="btn btn-sm btn-danger"  onclick="deleteblog({{ blog.blog_id}})" > 删除 </button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteblog({{ blog.blog_id}})"> 删除 </button>
                 </td>
             </tr>
             {% endfor %}
@@ -113,58 +103,61 @@
 </div>
 <script>
     function deleteblog(blogoneid) {
-            var post_data_del = {
-                "blogone": blogoneid,
-                csrfmiddlewaretoken: '{{ csrf_token }}'
-            };
-            $.ajax({
-                url: "/manage/{{ user.name }}/",
-                type: "POST",
-                data: post_data_del,
-            });
+        var post_data_del = {
+            "blogone": blogoneid,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        };
+        $.ajax({
+            url: "/manage/{{ user.name }}/",
+            type: "POST",
+            data: post_data_del,
+        });
 
-            location.reload()
-        }
+        location.reload()
+    }
+
     function addcate() {
         var post_data_addcate = {
-                "catename": document.getElementById("cate").value,
-                csrfmiddlewaretoken: '{{ csrf_token }}'
-            };
-            $.ajax({
-                url: "/manage/{{ user.name }}/",
-                type: "POST",
-                data: post_data_addcate,
-            });
-            window.alert("添加成功")
-            location.reload()
+            "catename": document.getElementById("cate").value,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        };
+        $.ajax({
+            url: "/manage/{{ user.name }}/",
+            type: "POST",
+            data: post_data_addcate,
+        });
+        window.alert("添加成功")
+        location.reload()
 
     }
+
     function delcate(cateid) {
         var post_data_delcate = {
-                "catetodel": cateid,
-                csrfmiddlewaretoken: '{{ csrf_token }}'
-            };
-            $.ajax({
-                url: "/manage/{{ user.name }}/",
-                type: "POST",
-                data: post_data_delcate,
-            });
-            window.alert("删除成功")
-            location.reload()
+            "catetodel": cateid,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        };
+        $.ajax({
+            url: "/manage/{{ user.name }}/",
+            type: "POST",
+            data: post_data_delcate,
+        });
+        window.alert("删除成功")
+        location.reload()
     }
+
     function filtercate(cateid) {
         var post_data_fil = {
-                "catetofil": cateid,
-                csrfmiddlewaretoken: '{{ csrf_token }}'
-            };
-            $.ajax({
-                url: "/manage/{{ username }}/",
-                type: "POST",
-                data: post_data_fil,
-                success : function () {
-                    window.location.reload()
-                }
-            });
+            "catetofil": cateid,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+        };
+        $.ajax({
+            url: "/manage/{{ username }}/",
+            type: "POST",
+            data: post_data_fil,
+            success: function() {
+                window.location.reload()
+            }
+        });
 
     }
 </script>
