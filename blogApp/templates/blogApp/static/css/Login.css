@@ -1,43 +1,48 @@
-#Login_box{
-    text-align: center;
-    margin:50px auto;
-    height:500px;
-    width:350px;
-    background-color: #b9def0;
+body {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #eee;
 }
 
-#head_img{
-    border-radius: 15px;
-    height: 80px;width:80px;
-    margin:0 auto;
-}
-.login_line{
-    width: 240px;
-    height:25px;
-    border-radius: 10px;
-    outline:none;
+.form-signin {
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
 }
 
-#p1{
-    font-size: 13px;
-    text-align:right;
-    cursor:help;
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+    margin-bottom: 10px;
 }
-#p1:hover{color:#F00}
 
-#button1{
-    border-radius: 10px;
-    height: 25px;
-    width: 60px;
-    outline:none;
+.form-signin .checkbox {
+    font-weight: normal;
 }
-#button1:hover{color:#F00}
 
-#view{
-    width:30px;
-    height:25px;
-    position:absolute;
-    right:38%;
-    padding-top:3px;
-    opacity: 0.5;
+.form-signin .form-control {
+    position: relative;
+    height: auto;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 16px;
+    margin: 5px;
+}
+
+.form-signin .form-control:focus {
+    z-index: 2;
+    margin: 5px;
+}
+
+.form-signin input[type="text"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }

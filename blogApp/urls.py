@@ -13,14 +13,19 @@ urlpatterns = [
     path('search/', views.search, name = 'search'),
     path('manage/<slug:username>/', views.manage, name = 'manage'),
     path('edit/<slug:blogid>/', views.edit, name = 'edit'),
-    path('info/<slug:username>', views.info, name='edit'),
-    path('editInfo/<slug:username>', views.editInfo, name='editInfo'),
-    path('edit/submit/<slug:username>', views.submit, name='submit'),
+    path('info/<slug:username>/', views.info, name='edit'),
+    path('editInfo/<slug:username>/', views.editInfo, name='editInfo'),
+    path('edit/submit/<slug:username>/', views.submit, name='submit'),
 
     path('download/<slug:username>/', views.download, name = 'download'),
     
-    path('personlIndex/<slug:username>/', views.personalIndex, name = 'personalIndex'),
+    path('personalIndex/<slug:username>/', views.personalIndex, name = 'personalIndex'),
     path('blogcontent/<int:blog_id>/', views.blog_content, name='content'),
+
+    path('notification/<slug:username>/', views.notify, name = 'notify'),
+
+    path('follow/<slug:username>/', views.follow, name = 'notify'),
+    path('favourite/<slug:username>/', views.favourite, name = 'notify'),
     # path('manage/<string:username>', views.manage, name = 'manage'),
     # path('edit/<string:username>', views.edit, name = 'edit'),
     # path('info/<string:username>', views.info, name = 'edit'),

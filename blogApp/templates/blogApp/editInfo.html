@@ -1,0 +1,12 @@
+{% extends "blogApp/info.html" %} {% block info %}
+<form action="form_action.asp" method="post" style="width:70%; margin-left: 20px">
+    <input type="text" class="form-control" style="margin-bottom: 10px" placeholder="昵称" name="username">
+    <input type="password" class="form-control" style="margin-bottom: 10px" placeholder="邮箱" name="password">
+    <input type="password" class="form-control" style="margin-bottom: 10px" placeholder="旧密码" name="password">
+    <input type="password" class="form-control" style="margin-bottom: 10px" placeholder="新密码" name="password">
+    <input type="password" class="form-control" style="margin-bottom: 10px" placeholder="确认密码" name="password">
+    <input type="password" class="form-control" style="margin-bottom: 10px" placeholder="头像" name="password">
+    <input type="password" class="form-control" style="margin-bottom: 10px" placeholder="个人简介" name="password">
+    <button class="btn btn-lg btn-primary btn-block" type="submit" style="margin:5px; width:70px">提交</button>
+</form>
+{% endblock %}

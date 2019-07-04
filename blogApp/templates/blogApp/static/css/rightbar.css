@@ -1,0 +1,36 @@
+.rightbar {
+    padding: 15px;
+    margin: 0 -15px 15px;
+}
+
+.rightbar-darker {
+    padding: 15px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+}
+
+.rightbar-darker p:last-child,
+.rightbar-darker ul:last-child,
+.rightbar-darker ol:last-child {
+    margin-bottom: 0;
+}
+
+.label-link:link {
+    color: white;
+    text-decoration: none;
+}
+
+.label-link:visited {
+    color: white;
+    text-decoration: none;
+}
+
+.label-link:hover {
+    color: white;
+    text-decoration: none;
+}
+
+.label-link:active {
+    color: white;
+    text-decoration: none;
+}

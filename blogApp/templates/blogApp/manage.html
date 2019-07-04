@@ -1,0 +1,172 @@
+{% extends "blogApp/_base_with_header.html" %}
+<!--extends-->
+
+<!--title-->
+{% block title %} 博客管理 {% endblock %}
+
+<!--pagetitle-->
+{% block pagetitle %} 博客管理 {% endblock %}
+
+<!--内容-->
+{% block main %}
+
+
+<link href="/static/css/rightbar.css" rel="stylesheet">
+
+<div style="float:left; width:30%; padding-right:10px" class="rightbar rightbar-darker">
+    <h2>
+        分类
+    </h2>
+
+    <ul id="category-list">
+                {% for cate,value in catedic.items %}
+                <li>
+                    {% for foo in recateset %}
+                        {% if foo.cate_name == cate %}
+                            <a href="javascript:filtercate({{ foo.cate_id }})">
+                        {{ cate }}({{ value }})
+                        </a>
+                        {% endif %}
+                    {% endfor %}
+                {% if value == 0 %}
+                    {% for i in recateset %}
+                        {% if i.cate_name == cate %}
+                            <button class="btn btn-sm btn-info" onclick="delcate({{ i.cate_id }})">
+                        删除
+                    </button>
+                        {% endif %}
+                    {% endfor %}
+
+                {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+
+
+            <input id = "cate" type="text" >
+            <input class="btn btn-info" onclick="addcate()" type="button" value="添加分类"  style="margin-left: 10px; margin-right: 10px">
+
+</div>
+
+<div style="float:right; width:70%; padding-left:10px">
+
+    <div style="float:left">
+        <h3>
+            我的博客：
+        </h3>
+    </div>
+
+
+    <div style="float:right; margin-top:15px">
+        <form method="GET">
+            <input type="text" name="keywords">
+            <input type="submit" value="搜索" class="btn btn-sm btn-info">
+        </form>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th style="width:40%">
+                    标题
+                </th>
+                <th>
+                    浏览数
+                </th>
+                <th>
+                    收藏数
+                </th>
+                <th>
+                    操作
+                </th>
+                <th>
+                    操作
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for blog in blogList %}
+            <tr>
+                <td style="width:40%">
+                    <a href='blogcontent/blog.blog_id/'>
+                    {{blog.title}}
+                    </a>
+                </td>
+                <td>
+                    {{blog.view_num}}
+                </td>
+                <td>
+                    {{blog.favourite_set.count}}
+                </td>
+                <td>
+                    <a href="/edit/{{blog.blog_id}}"> 编辑 </a>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-danger"  onclick="deleteblog({{ blog.blog_id}})" > 删除 </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+</div>
+<script>
+    function deleteblog(blogoneid) {
+            var post_data_del = {
+                "blogone": blogoneid,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            };
+            $.ajax({
+                url: "/manage/{{ user.name }}/",
+                type: "POST",
+                data: post_data_del,
+            });
+
+            location.reload()
+        }
+    function addcate() {
+        var post_data_addcate = {
+                "catename": document.getElementById("cate").value,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            };
+            $.ajax({
+                url: "/manage/{{ user.name }}/",
+                type: "POST",
+                data: post_data_addcate,
+            });
+            window.alert("添加成功")
+            location.reload()
+
+    }
+    function delcate(cateid) {
+        var post_data_delcate = {
+                "catetodel": cateid,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            };
+            $.ajax({
+                url: "/manage/{{ user.name }}/",
+                type: "POST",
+                data: post_data_delcate,
+            });
+            window.alert("删除成功")
+            location.reload()
+    }
+    function filtercate(cateid) {
+        var post_data_fil = {
+                "catetofil": cateid,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            };
+            $.ajax({
+                url: "/manage/{{ username }}/",
+                type: "POST",
+                data: post_data_fil,
+                success : function () {
+                    window.location.reload()
+                }
+            });
+
+    }
+</script>
+
+{% endblock %}

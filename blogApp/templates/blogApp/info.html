@@ -1,0 +1,33 @@
+{% extends "blogApp/_base_with_header.html" %} {% block main %}
+
+<div>
+    <div style="float:left; width:20%; ">
+        <div align="right">
+            <img src="https://raw.githubusercontent.com/oi-songer/oi-songer.github.io/master/portal.jpg" height="100px" width="100px" class="img-thumbnail">
+            <br>
+            <span style="color: rgb(77, 77, 77); font-size: 14px; margin-right: 16px;">关注 {{ follow_num }}</span>
+            <span style="color: rgb(77, 77, 77); font-size: 14px; margin-right: 16px;">粉丝 {{ followed_num }}</span>
+        </div>
+
+    </div>
+    <div style="height:100%; width:1px; border-left:1px #000 solid"></div>
+    <div style="float: right;width:70%; text-align: left; ">
+        {% block info %}
+        <ul class="list-group" style="width:90%; margin-left: 20px">
+            <li class="list-group-item" style="text-align: left; width:auto;">ID：{{ userID }}</li>
+            <li class="list-group-item" style="text-align: left; width:auto;">昵称：{{ nickname }}</li>
+            <li class="list-group-item" style="text-align: left;width:auto;">用户名：{{ name }}</li>
+            <li class="list-group-item" style="text-align: left;width:auto;">邮箱：{{ email }}</li>
+            <li class="list-group-item" style="text-align: left;width:auto;">个人介绍：{{ introduction }}</li>
+
+
+        </ul>
+        {% endblock %}
+    </div>
+</div>
+
+
+
+
+
+{% endblock %}

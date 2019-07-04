@@ -1,0 +1,79 @@
+{% extends "blogApp/_base_with_header.html" %}
+<!--extends-->
+
+<!--使用到的变量：
+rightbar:
+    currentUser
+    user
+    
+    tag
+
+    category
+
+    alreadyFollowed
+-->
+
+{% block main %}
+
+<link href="/static/css/rightbar.css" rel="stylesheet">
+<div style="float:right; width:25%; padding-left:2.5%">
+    {% block rightbar %}
+    <div class="rightbar rightbar-darker" name="bloger">
+        <h4>
+            博主
+        </h4>
+        <div style="text-align:center">
+            <img src="https://raw.githubusercontent.com/oi-songer/oi-songer.github.io/master/portal.jpg" height="100px" width="100px" cclass="img-thumbnail">
+            <br>
+            <br>
+            <h5><a href="#">博主昵称示例</a></h5>
+            <h5><a href="/personalIndex/{{user.username}}">{{user.nickname}}</a></h5>
+            <a href="/info/{{user.name}}"> 查看他的详细信息 </a>
+
+            <p>博文数：{{user.blog_set.count}}</p>
+            <p>粉丝数：{{user.follow_set.count}}</p>
+
+            {% if currentUser.user_id == user.user_id %} {% elif alreadyFollowed %}
+            <button type="button" class="btn btn-danger" name="follow"> 取消关注 </button> {% else %}
+            <button type="button" class="btn btn-info" name="cancelFollow"> 关注 </button> {% endif %}
+
+        </div>
+
+    </div>
+    <div class="rightbar rightbar-darker" name="category">
+        <h4>
+            分类
+        </h4>
+
+        <ol class="cateogryList">
+            <a href="/search?userid={{user.userid}}&category={{category.cate_id}}"> 分类样例 </a> </li>
+
+            <!--category-->
+            {% for category in categoryList %}
+            <li>
+                <a href="/search?userid={{user.userid}}&category={{category.cate_id}}"> {{category.cate_name}} </a>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+    <div class="rightbar" name="tag">
+        <h4>
+            标签
+        </h4>
+        <h4>
+            <span class="label label-info"> <a class="label-link" href="/search?userid={{userid}}&tagid={{tag.tag_id}}">标签样例</a>  </span>
+
+            <!--tag-->
+            {% for tag in tagList %}
+            <span class="label label-info"> 
+                <a class="label-link" href="/search?userid={{userid}}&tagid={{tag.tag_id}}">{{tag.tag_name}}</a> 
+            </span> {% endfor %}
+
+        </h4>
+    </div>
+    {% endblock %}
+</div>
+<div style="border-width:10px; border-color:black; float:left; width:75%; padding-right:2.5%">
+    {% block article %} {% endblock %}
+</div>
+{% endblock %}

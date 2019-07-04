@@ -1,0 +1,20 @@
+{% extends "blogApp/_base_with_nav_and_footer.html" %}
+<!--extends-->
+
+{% block content %}
+<link href="/static/css/header.css" rel="stylesheet">
+<div class="container">
+    <!--header-->
+    {% block header %}
+    <div class="page-header">
+        <h1 class="page-title">
+            <!--title of the page-->
+            {% block pagetitle %} Title {% endblock %}
+        </h1>
+    </div>
+    {% endblock %}
+
+    <!--main-->
+    {% block main %} {% endblock %}
+</div>
+{% endblock %}

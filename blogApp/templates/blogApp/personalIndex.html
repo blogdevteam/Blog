@@ -1,88 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>个人主页</title>
-     {% load staticfiles %}
-    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+{% extends "blogApp/_base_with_rightbar.html" %}
 
-    <link href="/static/css/PersonalPage.css" type="text/css" rel="stylesheet">
-    <link href="/static/css/footer.css" type="text/css" rel="stylesheet">
-    <link href="/static/css/bootstrap.css" type="text/css" rel="stylesheet">
+<!--使用到的变量：
+rightbar:
+    currentUser
+    user
+    tag
+    category
+    alreadyFollowed
+article:
+-->
 
-</head>
-<body id = "Personal Page"
-      style="height:auto ">
+{% block article %}
 
-  <div id="logo">
-    <h1>
-      <a href = ./homePage.html title="开发者的网上家园"><img src="/static/Images/title.PNG" alt="Logo" width="366" height="118" /></a>
-    </h1>
-  </div>
+    <!--测试-->
 
+    <div class="card">
+        <div class="card-header">
+            <h3>
+                <a href="">Title</a>
+            </h3>
+            <footer class="blockquote-footer"><cite title="Source Title">in    <a herf="">种类</a></cite></footer>
+        </div>
+        <div class="card-body">
+            <blockquote class="blockquote mb-0">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
 
-    <div id="top" style="width: 100%;height: 200px;">
-      <img src="/static/Images/bg.jpg" width="100%" height="100%">
-    </div>
-    <div id="navigation_bar">
-      <ul id="list1">
-        <li><a href="">首页</a></li>
-        <li><a href="">新的</a></li>
-        <li><a href="">联系</a></li>
-        <li><a href="">管理</a></li>
-        <li id="search_box"><input id="keywords" type="search" placeholder="输入查询关键字"></li>
-        <li id="search_button"><button id="button1" onclick="Search()">查询</button></li>
-        <li id="currentTime"><p id="logInfo" style="margin-top: 0px"></p></li>
-      </ul>
+        </blockquote>
+        </div>
     </div>
 
 
-  <div id = "main body"
-        style = "width: auto">
+    <!--测试结束-->
 
 
+    {% for blog in blogList %}
+        <div class="card">
+        <div class="card-header">
+            <h3>
+                <a href="{{ blog.link }}">{{ blog.title }}</a>
+            </h3>
+        </div>
+        <div class="card-body">
+            <blockquote class="blockquote mb-0">
+                <p>{{ blog.preview }}</p>
+                <footer class="blockquote-footer"><cite title="Source Title"><a herf="">{{ blog.cate.cate_name }}</a></cite></footer>
+        </blockquote>
+        </div>
+    </div>
+    {% endfor %}
 
-    <!---->
-    <div id = "block"
-         style = "width: auto">
-
-
-      <!--左侧博客栏-->
-      <div id = "left"
-           style="height: auto">
-        {% block blog_list %}
-            {% if not blog_flag %}
-                <p>暂无博客</p>
-            {% endif %}
-          {% for blog in page.object_list %}
-              <section>
-                <div class = "singleBlock">
-                    <!--作者in种类   日期-->
-                    <div class = "author_category">
-                        <a class = "link" href = "{{ user_link }}" >{{ nickname }}</a>
-                        <span>in</span>
-                        <span>
-                            <a class = "link" href = "{{ blog.cate_link }}">{{ blog.cate_name }}</a>
-                        </span>
-                    <span class = "date">{{ blog.time }}</span>
-
-                    </div>
-
-                    <!--博客内容-->
-                    <div class = "blockContext">
-                        <h1><a class = "link" href="{{ blog.blog_link }}">{{ blog.title }}</a> </h1>
-                        <!--简介-->
-                        <div class = "blockPreview">
-                            <p class = "preview">{{ blog.content|truncatewords:"20" }}</p>
-                        </div>
-                    </div>
-                </div>
-              </section>
-          {% endfor %}
-        {% endblock %}
-
-
-        <section>
+    <section>
             <ul class="pagination">
             {# 如果当前页还有上一页 #}
             {% if page.has_previous %}
@@ -121,131 +88,5 @@
             </li>
             {% endif %}
             </ul>
-        </section>
-
-      </div>
-
-
-
-      <!--右侧分类栏-->
-      <div id = "right">
-
-        <div align="center" style="width:100%;height: 200px;margin: 10px auto;border:3px dashed #96c2f1;">
-          <img src="/static/Images/bg.jpg" style="width: 50px;height: 50px;border-radius: 25px;margin-top: 10px">
-          <div style="text-align: left">
-            <ul style="list-style: none;margin-top: 20px">
-              <li>昵称：{{ nickname }}</li>
-              <li>注册时间：{{ regist_time }}</li>
-              <li>粉丝：{{ follow_num }}</li>
-                <form  action="" method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                            {% if  flo_flag%}
-                                <input class ="btn btn-primary"
-                                       type="submit"
-                                       style="width:80px;float: right;margin-bottom: 10px"
-                                       value="取消关注"/>
-                            {% endif %}
-                            {% if not flo_flag%}
-                                <input class ="btn btn-primary"
-                                       type="submit" style="width:80px;float: right;margin-bottom: 10px"
-                                       value="关注"/>
-                            {% endif %}
-                </form>
-            </ul>
-          </div>
-        </div>
-
-
-         <div id="type" style="width:90%;margin: 10px auto;background: #c8e5bc;">
-                <ul style="list-style: none;padding-top: 5px;padding-left: 40px;border-left: 5px solid #eff7ff;border-top: 4px solid #9acfea;
-border-bottom: 3px solid #9acfea;border-right: 5px solid #eff7ff;">
-                    <li class="L1">分类列表</li>
-                    {% if not cate_flag  %}
-                        <li>暂无种类</li>
-                    {% endif %}
-                    {% for cate in cate_list %}
-                        <li><a class = "link_a" href="{{ cate.link }}">{{ cate.cate_name }}</a></li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div id="label0" style="width:90%;margin: 10px auto;background: #c8e5bc;">
-                <ul style="list-style: none;padding-top: 5px;padding-left: 40px;border-left: 5px solid #eff7ff;border-top: 4px solid #9acfea;
-border-bottom: 3px solid #9acfea;border-right: 5px solid #eff7ff;">
-                    <li class="L1">自定义标签</li>
-                    {% if not tag_flag  %}
-                        <li>暂无标签</li>
-                    {% endif %}
-                    {% for tag in tag_list %}
-                        <li><a class = "link_a" href = "tag.link">{{ tag.name }}</a></li>
-                    {% endfor %}
-                </ul>
-            </div>
-
-            <div id="label0" style="width:90%;margin: 10px auto;background: #c8e5bc;">
-                <ul style="list-style: none;padding-top: 5px;padding-left: 40px;border-left: 5px solid #eff7ff;border-top: 4px solid #9acfea;
-border-bottom: 3px solid #9acfea;border-right: 5px solid #eff7ff;">
-                    <li class="L1">归档列表</li>
-                    {% if not file_flag  %}
-                        <li>暂无标签</li>
-                    {% endif %}
-                    {% for file in file_list %}
-                        <li><a class = "link_a" href = "file.link">{{ file.file }}</a></li>
-                    {% endfor %}
-                </ul>
-            </div>
-
-      </div>
-    </div>
-    <!-- footer -->
-    <div id="footer">
-      <img src="/static/Images/h1.jpg" width="100%" height="100px">
-    </div>
-  </div>
-
-  <script>
-    function Search(){
-      let key=document.getElementById("keywords").value;
-      if(key==""){
-        alert("查询字不能为空!");
-      }
-    }
-  </script>
-  <script>
-    function getCurDate()
-    {
-      var d = new Date();
-      var week;
-      switch (d.getDay()){
-        case 1: week="星期一"; break;
-        case 2: week="星期二"; break;
-        case 3: week="星期三"; break;
-        case 4: week="星期四"; break;
-        case 5: week="星期五"; break;
-        case 6: week="星期六"; break;
-        default: week="星期天";
-      }
-      var years = d.getFullYear();
-      var month = add_zero(d.getMonth()+1);
-      var days = add_zero(d.getDate());
-      var hours = add_zero(d.getHours());
-      var minutes = add_zero(d.getMinutes());
-      var seconds=add_zero(d.getSeconds());
-      var ndate = years+"年"+month+"月"+days+"日 "+hours+":"+minutes+":"+seconds+" "+week;
-      var divT=document.getElementById("logInfo");
-      divT.innerHTML= ndate;
-    }
-    function add_zero(temp)
-    {
-      if(temp<10) return "0"+temp;
-      else return temp;
-    }
-    setInterval("getCurDate()",100);
-  </script>
-
-    <script src="{% static 'js/jquery.js' %}"></script>
-    <script src="{% static 'js/bootstrap.js' %}"></script>
-
-</body>
-
-
-</html>
+    </section>
+{% endblock %}

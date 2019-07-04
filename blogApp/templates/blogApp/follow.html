@@ -1,0 +1,56 @@
+{% extends "blogApp/_base_with_header.html" %}
+<!--extends-->
+
+<!--title-->
+{% block title %} 我的关注 {% endblock %}
+
+<!--pagetitle-->
+{% block pagetitle %} 我的关注 {% endblock %}
+
+<!--main-->
+{% block main %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>
+                博主
+            </th>
+            <th style="width:70%">
+                简介
+            </th>
+            <th>
+                操作
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user1 in userList %}
+        <tr>
+            <td style="width:40%">
+                <a href="/personalIndex/{{user1.name}}">{{user1.name}}</a>
+            </td>
+            <td>
+                {{user.description}}
+            </td>
+            <td>
+                <button class="btn btn-sm btn-danger" onclick="cancel({{user1.user_id}})" > 取消关注 </button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<script>
+function cancel(id) {
+        var post_data_can = {
+                "userid": id,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            };
+            $.ajax({
+                url: "/follow/{{ user.name }}/",
+                type: "POST",
+                data: post_data_can,
+            });
+            window.alert("取消关注")
+            location.reload()
+    }</script>
+{% endblock %}

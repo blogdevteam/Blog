@@ -79,49 +79,49 @@ def regist(req):
 #登陆
 def login(req):
     if req.method == 'POST':
-        uf = UserForm(req.POST)
-        if uf.is_valid():
-            #获取表单用户密码
-            username = uf.cleaned_data['username']
-            password = uf.cleaned_data['password']
-            import hashlib
-            h2 = hashlib.md5()
-            h2.update(password.encode(encoding='utf-8'))
-            storepassword = h2.hexdigest()
-            #获取的表单数据与数据库进行比较
-            auser = User.objects.filter(name__exact = username,password__exact = storepassword)
 
-            if auser:
-                #比较成index
-                response = HttpResponseRedirect('/info/%s' % username)
-                #将username写入浏览器cookie,失效时间为3600
-                loginuserid1 = auser.values_list('user_id',flat=True)
-                loginuserid = loginuserid1[0]
+        username = req.POST.get('username',None)
+        password = req.POST.get('password',None)
 
-                # 随机串
-                seed = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+=-"
-                sa = []
-                for i in range(20):
-                    sa.append(random.choice(seed))
-                salt = ''.join(sa)
-                print(salt)
-                response.set_cookie('userid',salt,3600)
+
+        import hashlib
+        h2 = hashlib.md5()
+        h2.update(password.encode(encoding='utf-8'))
+        storepassword = h2.hexdigest()
+        #获取的表单数据与数据库进行比较
+        auser = User.objects.filter(name__exact = username,password__exact = storepassword)
+
+        if auser:
+            #比较成
+            response = HttpResponseRedirect('/index')
+            #将username写入浏览器cookie,失效时间为3600
+            loginuserid1 = auser.values_list('user_id',flat=True)
+            loginuserid = loginuserid1[0]
+
+            # 随机串
+            seed = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+=-"
+            sa = []
+            for i in range(20):
+                sa.append(random.choice(seed))
+            salt = ''.join(sa)
+            print(salt)
+            response.set_cookie('userid',salt,3600)
 
                 #保存到数据库（salt，userid(loginuserid))
-                loginuser = User.objects.get(user_id=loginuserid)
-                cookie = Cookie()
-                print(loginuserid)
-                cookie.user = loginuser
-                cookie.cookie = salt
-                cookie.save()
+            loginuser = User.objects.get(user_id=loginuserid)
+            cookie = Cookie()
+            print(loginuserid)
+            cookie.user = loginuser
+            cookie.cookie = salt
+            cookie.save()
 
-                return response
-            else:
+            return response
+        else:
                 #比较失败，还在login
-                return HttpResponseRedirect('/login')
+            return HttpResponseRedirect('/Login')
     else:
         uf = UserForm()
-    return render(req,'blogApp/Login.html',{'uf':uf})
+    return render(req,'blogApp/Login.html')
 
 # 登陆成功
 # def index(req):
@@ -150,8 +150,11 @@ def index(req):
             )
         )[:20]
 
-    cock = request.COOKIES.get('userid', None)
-    currentuser = getUserByCOOKIE(cock)
+    cock = req.COOKIES.get('userid', None)
+    if (cock == None):
+        currentuser = None
+    if (cock!=None):
+        currentuser = getUserByCOOKIE(cock)
     dic = {}
     dic['userList'] = userList
     dic['blogList'] = blogList
@@ -193,8 +196,11 @@ def search(req):
     cock = req.COOKIES.get('userid', None)
     if (cock != None):
         currentuser = getUserByCOOKIE(cock)
+    else:
+        currentuser = None
     dic['currentUser'] = currentuser
     dic['blogList'] = list(queryList)
+    print(dic)
 
     return render(req, 'blogApp/search.html', dic)
 
@@ -203,7 +209,9 @@ def edit(req,blogid):
     #1.标签和分类的问题
     #blogid 查出userid然后和cookie进行对比，
     #找cookie对应的id
-    useridsalt = req.COOKIES.get('userid','')
+    useridsalt = req.COOKIES.get('userid',None)
+    if (useridsalt == None):
+        return HttpResponseRedirect('blogApp/error.html')
     c_userid = Cookie.objects.get(cookie__exact=useridsalt).user_id
     #不加_id的话是一个对象，加的话是一贯制
     #找用户名对应的id
@@ -215,7 +223,7 @@ def edit(req,blogid):
         #验证正确性
         u_userid = Blog.objects.get(blog_id=blogid).user_id
         if (u_userid != c_userid):
-            return HttpResponseRedirect('/login')
+            return HttpResponseRedirect('blogApp/error.html')
 
         #从数据库中读取原来的博客题目内容分类等
         catset1 = Category.objects.filter(user_id=c_userid)
@@ -274,7 +282,8 @@ def edit(req,blogid):
                     Tag.objects.create(tag_name=i)
                     everyid = Tag.objects.get(tag_name=i).tag_id
                     BlogTag.objects.create(blog_id=blogid, tag_id=everyid)
-        return render(req, 'blogApp/edit.html', {'catset': catset, 'reblog': reblog, 'blogid': blogid,'catename':catename,'str': str})
+        user = User.objects.get(user_id=c_userid)
+        return render(req, 'blogApp/edit.html', {'catset': catset, 'reblog': reblog, 'blogid': blogid,'catename':catename,'str': str,'user':user})
 
     #等于零，新的
     else:
@@ -286,6 +295,7 @@ def edit(req,blogid):
         text = req.POST.get('text', None)
         mytags = req.POST.get('mytags', None)
         aclass = req.POST.get('class', None)
+        print(title,text,mytags,aclass)
 
         if (title != None):
             # 将Blog存进数据库,给出blogid
@@ -312,7 +322,8 @@ def edit(req,blogid):
                     Tag.objects.create(tag_name=i)
                     tagnum = Tag.objects.get(tag_name=i).tag_id
                     BlogTag.objects.create(blog_id=blogid, tag_id=tagnum)
-        return render(req, 'blogApp/edit.html', {'catset': catset, 'blogid': blogid})
+        user = User.objects.get(user_id = c_userid)
+        return render(req, 'blogApp/edit.html', {'catset': catset, 'blogid': blogid,'currentUser':user})
 
 
     #不管blog内容怎么样都要从数据库中读出标签
@@ -325,7 +336,9 @@ def manage(req,username):
     #添加新博客的时候时用0传入，编辑的时候用某个blogid进入
     #用username和cookie进行对比
     catetofil = req.POST.get('catetofil', None)
-    useridsalt = req.COOKIES.get('userid', '')
+    useridsalt = req.COOKIES.get('userid', None)
+    if (useridsalt == None):
+        return HttpResponseRedirect('blogApp/error.html')
     c_userid = Cookie.objects.get(cookie__exact=useridsalt).user_id
     u_userid = User.objects.get(name__exact=username).user_id
     if (c_userid == u_userid ):
@@ -357,7 +370,8 @@ def manage(req,username):
         test = req.POST.get('blogone', None)#ajax不能穿一个对象？直接传id了
         cate = req.POST.get('catename',None)
         catedel = req.POST.get('catetodel',None)
-
+        print("测试 ssss、")
+        print(catedel)
         if (test != None):
             Blog.objects.filter(blog_id__exact=test).delete()
         if (cate != None):
@@ -366,14 +380,28 @@ def manage(req,username):
             Category.objects.filter(cate_id__exact=catedel).delete()
 
 
-        print(reblogset)
+        #通过cookie获取当前用户
+        dic = {}
+        cock = req.COOKIES.get('userid', None)
+        if (cock != None):
+            currentuser = getUserByCOOKIE(cock)
+        else:
+            currentuser = None
+        #通过传入的参数获取被访问的用户
+        user = User.objects.get(name = username)
+        dic['currentUser'] = currentuser
+        dic['blogList'] = reblogset
+        dic['user'] = user
+        dic['catedic'] = catedic
+        dic['recateset'] = recateset
 
-        return render(req,'blogApp/back-end.html', {'reblogset':reblogset, 'username':username,'catedic':catedic,'recateset':recateset})
+
+        return render(req,'blogApp/manage.html', dic)
 
         #利用reblogset自动生成表单
 
     else:
-        return HttpResponseRedirect('/login')
+        return HttpResponseRedirect('blogApp/error.html')
 
 #to do
 def download(req,username):
@@ -381,12 +409,27 @@ def download(req,username):
 
 #编辑个人信息
 def editInfo(req, username):
-    useridsalt = req.COOKIES.get('userid', '')
-    result = Cookie.objects.filter(cookie__exact=useridsalt)
-    userid1 = result.values_list('user', flat=True)
-    userid = userid1[0]
-    origin = User.objects.get(user_id__exact=userid)
-    return render(req,'blogApp/personalInfoEdit.html',{'nickname':origin.nickname,'email':origin.email,'username':origin.name})
+    #访问用户，增加判断，不相等时跳转到error
+    user = User.objects.get(name = username)
+
+    #从cookie中获得的当前用户
+    useridsalt = req.COOKIES.get('userid', None)
+    if (useridsalt != None):
+        result = Cookie.objects.filter(cookie__exact=useridsalt)
+        userid1 = result.values_list('user', flat=True)
+        userid = userid1[0]
+        currentUser = User.objects.get(user_id__exact=userid)
+    else:
+        currentUser = None
+
+    if (user.user_id == currentUser.user_id):
+        return render(req, 'blogApp/editInfo.html',
+                      {'user':user,'currentUser':currentUser})
+    else:
+        return HttpResponseRedirect('blogApp/error.html')
+
+
+
 
 
 #提交个人信息
@@ -413,12 +456,17 @@ def submit(req,username):
 
 #显示个人信息
 def info(req,username):
-    useridsalt = req.COOKIES.get('userid', '')
-    result = Cookie.objects.filter(cookie__exact=useridsalt)
-    userid1 = result.values_list('user', flat=True)
-    userid = userid1[0]
-    auser=User.objects.get(user_id__exact=userid)
-    data={'nickname': auser.nickname,'email':auser.email,'username':username}
+    useridsalt = req.COOKIES.get('userid', None)
+    if (useridsalt!=None):
+        result = Cookie.objects.filter(cookie__exact=useridsalt)
+        userid1 = result.values_list('user', flat=True)
+        userid = userid1[0]
+        auser=User.objects.get(user_id__exact=userid)
+    else:
+        auser = None
+
+    user = User.objects.get(name=username)
+    data={'currentUser': auser,'user':user}
     print(data)
     return render(req,'blogApp/personalInfo.html',data)
 
@@ -558,6 +606,16 @@ def get_blog_user(blog_id):
 
 
 def personalIndex(request, username):
+    judegcookie = request.COOKIES.get('userid',None)
+    if (judegcookie == None):
+        currentUser = None
+        user = User.objects.get(name = username)
+
+        dic = {}
+        dic["currentUser"] = currentUser
+        dic["user"] = user
+        return render(request, 'blogApp/personalIndex.html', dic)
+
     user_id, flag = get_user_id(username)
     global follow_form
     global flo_flag
@@ -571,9 +629,9 @@ def personalIndex(request, username):
                                       'followed_user_id': followed_user_id})
             if follow_form.is_valid():
                 followed_user_id = user_id
+
                 cock = request.COOKIES.get('userid',None)
                 follow_user_id = getUserByCOOKIE(cock).user_id
-                print(follow_user_id)
                 print("被关注" + str(followed_user_id))
                 print("关注" + str(follow_user_id))
                 flo_flag = whether_follow(followed_user_id, follow_user_id)
@@ -591,6 +649,14 @@ def personalIndex(request, username):
             context = get_personal_page_content(request, user_id)
             context['flo_flag'] = flo_flag
             context['follow_form'] = follow_form
+
+            cock = request.COOKIES.get('userid', None)
+            currentuser = getUserByCOOKIE(cock)
+            user = User.objects.get(name=username)
+            context['currentUser'] = currentuser
+            context['user'] = user
+
+
             return render(request, 'blogApp/personalIndex.html', context)
         else:
             follow_form = FollowForm()
@@ -607,10 +673,16 @@ def personalIndex(request, username):
             # print(flo_flag)
             context['flo_flag'] = flo_flag
             context['follow_form'] = follow_form
+
+            cock = request.COOKIES.get('userid', None)
+            currentuser = getUserByCOOKIE(cock)
+            user = User.objects.get(name=username)
+            context['currentUser'] = currentuser
+            context['user'] = user
             return render(request, 'blogApp/personalIndex.html', context)
         # 将当前页页码，以及当前页数据传递到index.html
     else:
-        return HttpResponse('未找到用户')
+        return HttpResponseRedirect('blogApp/error.html')
 
 
 def get_user_id(user_name):
@@ -675,6 +747,8 @@ def blog_content(request, blog_id):
     global fav_flag
     global follow_user_id
     global followed_user_id
+
+   #游客访问的话会出现问题，结合前端更改吧😄
 
     followed_user_id,name = get_blog_user(blog_id)
     #follow_user_id = '111119'
@@ -833,3 +907,80 @@ def home_page(request):
 def getUserByCOOKIE(cook):
 
     return Cookie.objects.get( cookie = cook ).user
+
+def notify(req,username):
+    useridsalt = req.COOKIES.get('userid', None)
+    if (useridsalt == None):
+        return HttpResponseRedirect('blogApp/error.html')
+    currentUser = Cookie.objects.get(cookie__exact=useridsalt).user
+    c_userid = currentUser.user_id
+
+    user = User.objects.get(name__exact=username)
+    u_userid = user.user_id
+    if (c_userid == u_userid):#cookie验证成功
+        notificationsList = Notification.objects.filter(user_id = c_userid)
+        dic = {}
+        dic['currentUser'] = currentUser
+        dic['user'] = user
+        dic['notificationList'] = notificationsList
+
+        return render(req,'blogApp/notification.html',dic)
+    else:
+        return HttpResponseRedirect('blogApp/error.html')
+
+def follow(req,username):
+    useridsalt = req.COOKIES.get('userid', None)
+    if (useridsalt == None):#没有cookie
+        return HttpResponseRedirect('blogApp/error.html')
+    currentUser = Cookie.objects.get(cookie__exact=useridsalt).user
+    c_userid = currentUser.user_id
+
+    user = User.objects.get(name__exact=username)
+    u_userid = user.user_id
+    if (c_userid == u_userid):#cookie验证成功,cookie存的和被访问的一样
+
+        canuser = req.POST.get('userid',None)
+        if (canuser!=None):
+            Follow.objects.filter(user_id = c_userid,fld_user_id = canuser).delete()
+
+
+        follow = Follow.objects.filter(user_id = c_userid)
+        userList = []
+        for i in follow:
+            userList.append(User.objects.get(user_id = i.fld_user_id))
+        dic = {}
+        dic['currentUser'] = currentUser
+        dic['user'] = user
+        dic['userList'] = userList
+        dic['followList'] = follow
+        return render(req, 'blogApp/follow.html', dic)
+    else:
+        return HttpResponseRedirect('blogApp/error.html')
+
+def favourite(req,username):
+    useridsalt = req.COOKIES.get('userid', None)
+    if (useridsalt == None):#没有cookie
+        return HttpResponseRedirect('blogApp/error.html')
+    currentUser = Cookie.objects.get(cookie__exact=useridsalt).user
+    c_userid = currentUser.user_id
+
+    user = User.objects.get(name__exact=username)
+    u_userid = user.user_id
+    if (c_userid == u_userid):#cookie验证成功,cookie存id的和被访问id的一样
+
+        canb = req.POST.get('blogid', None)
+        if (canb != None):
+            Favourite.objects.filter(blog_id =canb, user_id = c_userid).delete()
+
+        favList = Favourite.objects.filter(user_id = c_userid)
+        blogList = []
+        for i in favList:
+            blogList.append(Blog.objects.get(blog_id = i.blog_id))
+        dic = {}
+        dic['currentUser'] = currentUser
+        dic['user'] = user
+        dic['blogList'] = blogList
+        print(dic)
+        return render(req, 'blogApp/favourite.html', dic)
+    else:
+        return HttpResponseRedirect('blogApp/error.html')

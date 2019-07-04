@@ -1,20 +1,46 @@
-<!doctype html>
-<html>
+{% extends "blogApp/_base_with_header.html" %}
+<!--extends-->
 
-<head>
-    <meta charset="utf-8">
-    <link href="/static/css/Register.css" type="text/css" rel="stylesheet">
-    <title>搜索界面</title>
-</head>
+<!--title-->
+{% block title %} 搜索 {% endblock %}
 
-<body>
-    {% for blog in blogList %}
-    <div>
-        <h2>{{blog.title}}</h2>
+<!--pagetitle-->
+{% block pagetitle %} 文章列表 {% endblock %}
 
-        {{blog.preview}}
+<!--main-->
+{% block main %}
+
+<!--user-->
+{% if user != None %}
+<p>作者：{{user.username}}</p> {% endif %}
+
+<!--category-->
+{% if category != None %}
+<p>分类：{{category.cate_name}}</p> {% endif %}
+
+<!--tag-->
+{% if tag != None %}
+<p>标签：{{tag.tag_name}}</p> {% endif %}
+
+<!--keywords-->
+
+{% if keywords != None %} 关键字：{% for keyword in keywords %}
+<p>{{keyword}}</p>
+{% endfor %} {% endif %}
+
+<!--blogList-->
+{% if blogList == None %} 无匹配结果 {% else %} {% for blog in blogList %}
+
+<div class="card">
+        <div class="card-header">
+            <h3>
+                <a href="/blogCotent/{{blog.blog_id}}">{{blog.title}}</a>
+            </h3>
+        </div>
+        <div class="card-body">
+            <blockquote class="blockquote mb-0">
+                {{ blog.preview | safe}}
+        </blockquote>
+        </div>
     </div>
-    {% endfor %}
-</body>
-
-</html>
+{% endfor %} {% endif %} {% endblock %}

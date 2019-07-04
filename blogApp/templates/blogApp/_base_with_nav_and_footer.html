@@ -1,0 +1,59 @@
+{% extends "blogApp/_base_with_footer.html" %}
+<!--extends-->
+
+{% block nav %}
+
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                  <span class="sr-only">Toggle navigation</span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                    </button>
+            <a class="navbar-brand" href="/">博客院</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">主页</a></li>
+                <li><a href="/personalIndex/{{currentUser.name}}">我的博客</a></li>
+                <li><a href="/manage/{{currentUser.name}}">管理博客</a></li>
+                <li><a href="/edit/0">新建博客</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <form method="GET" action="/search" style="margin-top: 10px">
+                        <input type="text" name="keywords">
+                        <input type="submit" value="搜索" class="btn btn-sm btn-info" style="margin-left: 10px; margin-right: 10px">
+                    </form>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        {% if currentUser != Node %}
+                            {{currentUser.name}}
+                        {% else %}
+                            游客
+                        {% endif %}
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        {% if currentUser != None %}
+                        <li><a href="/notification/{{currentUser.name}}">通知</a></li>
+                        <li><a href="/follow/{{currentUser.name}}">我的关注</a></li>
+                        <li><a href="/favourite/{{currentUser.name}}">我的收藏</a></li>
+                        <li><a href="/editInfo/{{currentUser.name}}">编辑个人信息</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/login">更换账号</a></li>
+                        {% else %}
+                        <li><a href="/login">登录</a></li>
+                        <li><a href="/regist">注册</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+{% endblock %}

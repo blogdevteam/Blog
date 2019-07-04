@@ -1,0 +1,51 @@
+{% extends "blogApp/_base_with_header.html" %}
+<!--extends-->
+
+<!--title-->
+{% block title %} 我的收藏 {% endblock %}
+
+<!--pagetitle-->
+{% block pagetitle %} 我的收藏 {% endblock %}
+
+<!--main-->
+{% block main %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th style="width:70%">
+                博客
+            </th>
+            <th>
+                操作
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for blog in blogList %}
+
+        <tr>
+            <td>
+                <a href="/blogContent/{{blog.blog_id}}">{{blog.title}}</a>
+            </td>
+            <td>
+                <button class="btn btn-sm btn-danger" onclick="cancel({{blog.blog_id}})"> 取消关注 </button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<script>
+function cancel(id) {
+        var post_data_can = {
+                "blogid": id,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            };
+            $.ajax({
+                url: "/favourite/{{ user.name }}/",
+                type: "POST",
+                data: post_data_can,
+            });
+            window.alert("取消关注")
+            location.reload()
+    }</script>
+{% endblock %}

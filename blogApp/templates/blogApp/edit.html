@@ -1,72 +1,38 @@
-<head>
-    <meta charset="UTF-8">
-    <script src="/static/css/jquery-3.4.1.min.js"></script>
-    <link rel="stylesheet" href="./CSS/amazeui.css">
+{% extends "blogApp/_base_with_header.html" %}
+<!--extends-->
 
-    <title>
-        编辑文章
-    </title>
+<!--title-->
+{% block title %} 编辑 {% endblock %}
 
+<!--pagetitle-->
+{% block pagetitle %} 编辑博客 {% endblock %} {% block main %}
 
-        <script language="javascript">
- if(typeof jQuery == 'undefined'){
-     window.alert("没有jquery");
-}
- </script>
-</head>
+<script src="/static/css/jquery-3.4.1.min.js"></script>
+<link href="/static/css/rightbar.css" rel="stylesheet">
+<link href="https://cdn.bootcss.com/bootstrap-select/1.12.4/css/bootstrap-select.min.css" rel="stylesheet">
 
-<style>
-    div {
-        overflow: hidden;
-    }
-    
-    textarea {
-        resize: none;
-    }
-    
-    #header {
-        background-color: lightskyblue;
-        box-shadow: 2px 2px 1px #888888;
-        padding: 5px;
-        height: 30px;
-    }
-    
-    #content {
-        background-color: antiquewhite;
-        width: 94%;
-        margin-top: 2%;
-        margin-left: 3%;
-        margin-right: 3%;
-        padding: 2%;
-        float: left;
-        box-shadow: 6px 6px 3px #888888;
-    }
-    
-    #choose {
-        float: right;
-        width: 10%;
-    }
-</style>
+<div style="float:left; width:70%; padding-left:10px; margin-bottom:20px">
+    <h4>标题：</h4><input type="text" class="form-control" style="width:70%" id="title" value={{ reblog.title }}>
+    <br>
 
-<body>
+    <h4>内容：</h4>
+    <textarea class="form-control" style="height:310px; resize:none" id="text">{{ reblog.content }}</textarea>
+</div>
 
-    <div id="header">
-        <div style="float:left"> <a href="./homePage.html">回到聚合页</a> </div>
-        <div style="float:right"> <a href="./personalPage.html">退出登录</a> </div>
+<div style="float:right; width:30%; padding-right:10px" class="rightbar rightbar-darker">
+
+    <div style="float:right">
+        <a href="/manage/{{currentUser.name}}">返回管理界面</a>
     </div>
 
-    <div id="content">
-        <div style="float:right"> <a href="./back-end.html">返回博客列表</a></div>
+    <br>
+    <br>
+    <br>
 
-        <h4>标题：</h4>
-        <textarea id="title" rows="1" style="width:80%">{{ reblog.title }}</textarea>
-        <br>
-        <h4>内容：(支持markdown语法)</h4>
-        <textarea id="text" rows="20" style="width:80%">{{ reblog.content }}</textarea>
+    <h4>分类：</h4>
+    <div style="margin-left:10px">
 
-        <div id="choose">
-            <h4>分类：</h4>
-            <select id = "class">
+        <select id = "class">
                 {% for cat in catset %}
                     {% if cat == catename %}
                     <option value="{{ cat}}" selected >{{ cat }}</option>
@@ -76,31 +42,25 @@
                     {% endif %}
                 {% endfor %}
             </select>
-
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <div id="tags">
-                <h4>请输入标签：</h4>
-                <textarea id = "mytags" rows="1">{{ str }}</textarea>
-            </div>
-
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
-            <div><input href="/edit/{{ blogid }}/" type="button" name="发布" value="发布" onclick="givecontent()"/>
-            </div>
-        </div>
     </div>
+
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <h4>标签：</h4>
+    <div>
+        <input type="text" value="{{str}}" class="form-control" id="mytags" placeholder="请使用“，”分隔">
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div style="text-align: center">
+        <button class="btn btn-info" onclick="givecontent()">提交</button>
+    </div>
+</div>
 
 <script>
     function givecontent() {
@@ -115,9 +75,6 @@
                 url: "/edit/{{ blogid }}/",
                 type: "POST",
                 data: post_data,
-
-
-
             });
             document.getElementById("title").value = ''
             document.getElementById("text").value = ''
@@ -126,5 +83,6 @@
             window.alert("发布成功")
         }
 </script>
-    </body>
 
+
+{% endblock %}

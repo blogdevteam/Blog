@@ -14,7 +14,7 @@ class User(models.Model):
     email = models.EmailField(null = True, blank = True)
     description = models.CharField(max_length = 100, null = True, blank = True)
 
-    avatar = models.CharField(null= True,max_length= 100)
+    avatar = models.CharField(null= True,max_length= 100, default="https://raw.githubusercontent.com/oi-songer/oi-songer.github.io/master/portal.jpg")
 
     class Meta:
         db_table = 'User'
@@ -62,7 +62,8 @@ class Blog(models.Model):
             # 语法高亮扩展
             'markdown.extensions.codehilite',
             ])
-
+        if str == "":
+            str = "无预览"
         return str
 
     class Meta:

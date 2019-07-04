@@ -1,4 +1,4 @@
-{% extends "blogApp/_base.html" %}
+{% extends "_base.html" %}
 <!--extends-->
 
 {% block content %}
@@ -7,17 +7,17 @@
 
 <div class="container" style="text-align: center">
 
-    <form class="form-signin" method="post">
-        {% csrf_token %}
-        <h2 class="form-signin-heading">请登录</h2>
+    <form class="form-signin">
+        <h2 class="form-signin-heading">注册</h2>
         <label for="inputEmail" class="sr-only">用户名</label>
         <input type="text" class="form-control" placeholder="用户名" name="username" required autofocus>
         <input type="password" class="form-control" placeholder="密码" name="password" required>
+        <input type="password" class="form-control" placeholder="请在此输入密码" name="repeatpassword" required>
 
-        <button class="btn btn-lg btn-primary btn-block" type="submit" style="margin:5px">登录</button>
+        <button class="btn btn-lg btn-primary btn-block" type="submit" style="margin:5px">注册</button>
     </form>
 
-    没有账号？<a href="/regist">注册</a>
+    已有账号？<a href="/login">登录</a>
     <br>
     <br>
     <a href="/">返回首页</a>

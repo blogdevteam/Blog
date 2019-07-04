@@ -1,0 +1,57 @@
+{% extends "blogApp/_base_with_header.html" %}
+
+<!--page title-->
+{% block pagetitle %} 主页 {% endblock %}
+
+<!--main-->
+{% block main %}
+
+<link href="/static/css/rightbar.css" rel="stylesheet">
+
+<div style="float:left; width:30%; padding-right:10px" class="rightbar rightbar-darker">
+    <h2>
+        推荐博主：
+    </h2>
+
+    <ol class="cateogryList">
+        <!--category-->
+
+        <li><a href="/personalIndex/{{user.name}}"> 博主示例 </a></li>
+
+        {% for user in userList %}
+        <li>
+            <a href="/personalIndex/{{user.name}}"> {{user.name}} </a>
+        </li>
+        {% endfor %}
+    </ol>
+</div>
+
+<div style="float:right; width:70%; padding-left:10px">
+
+    <div>
+        <h4>
+            <a href="/personalIndex/{{blog.user.name}}">Test</a> in <a href="/search?category={{blog.cate_id}}">Test</a>
+        </h4>
+        <h3>
+            <a href="/blogContent/{{blog.blog_id}}"> 博客标题 </a>
+        </h3>
+        博客内容测试。
+    </div>
+
+    {% for blog in blogList %}
+
+    <div>
+        <h4>
+            <a href="/personalIndex/{{blog.user.name}}">{{blog.user.name}} </a> in <a href="/search?category={{blog.cate_id}}">{{blog.cate.cate_name}}</a>
+        </h4>
+        <h3>
+            <a href="/blogContent/{{blog.blog_id}}"> {{blog.title}} </a>
+        </h3>
+
+        {{blog.preview | safe}}
+    </div>
+
+    {% endfor %}
+</div>
+
+{% endblock %}

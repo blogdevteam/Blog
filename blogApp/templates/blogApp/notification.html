@@ -1,0 +1,30 @@
+{% extends "blogApp/_base_with_header.html" %}
+<!--extends-->
+
+<!--title-->
+{% block title %} 通知 {% endblock %}
+
+<!--pagetitle-->
+{% block pagetitle %} 通知列表 {% endblock %}
+
+<!--main-->
+{% block main %}
+
+
+<!--notificationList-->
+{% if notificationList == None %} 无通知 {% else %} {% for notification in notificationList %}
+<div class="panel panel-default" style="margin-top:5px; margin-bottom:5px">
+    <div class="panel-heading">
+        <div style="float:left">
+            {% if notification.unread %} 未读 {% else %} 已读 {% endif %}
+        </div>
+        <div style="float:right">
+            {{notification.time}}
+        </div>
+        <br>
+    </div>
+    <div class="panel-body">
+        {{notification.content}}
+    </div>
+</div>
+{% endfor %} {% endif %} {% endblock %}
