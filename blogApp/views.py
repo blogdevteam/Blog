@@ -177,16 +177,16 @@ def search(req):
         )
         dic['keywords'].append(req.GET['keywords'])
 
-    if ('category_id' in req.GET and not req.GET['category_id'] == ''):
-        queryList = queryList.filter(category__id = req.GET['category_id'])
-        dic['category_id'] = req.GET['category_id']
+    if ('categoryid' in req.GET and not req.GET['categoryid'] == ''):
+        queryList = queryList.filter(category__id = req.GET['categoryid'])
+        dic['categoryid'] = req.GET['category_id']
     
-    if ('user_id' in req.GET and not req.GET['user_id'] == ''):
-        queryList = queryList.filter(user__id = req.GET['user_id'])
-        dic['user_id'] = req.GET['user_id']
+    if ('userid' in req.GET and not req.GET['userid'] == ''):
+        queryList = queryList.filter(user__id = req.GET['userid'])
+        dic['userid'] = req.GET['userid']
 
-    if ('tag_id' in req.GET and not req.GET['tag_id'] == ''):
-        queryList = queryList.filter(tag_id = req.GET['tag_id'])
+    if ('tagid' in req.GET and not req.GET['tagid'] == ''):
+        queryList = queryList.filter(tag_id = req.GET['tagid'])
 
     cock = req.COOKIES.get('userid', None)
     if (cock != None):
