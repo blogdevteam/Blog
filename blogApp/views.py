@@ -207,7 +207,7 @@ def edit(req,blogid):
     #找cookie对应的id
     useridsalt = req.COOKIES.get('userid',None)
     if (useridsalt == None):
-        return HttpResponseRedirect('blogApp/error.html')
+        return HttpResponseRedirect('/error')
     c_userid = Cookie.objects.get(cookie__exact=useridsalt).user_id
     #不加_id的话是一个对象，加的话是一贯制
     #找用户名对应的id
@@ -219,7 +219,7 @@ def edit(req,blogid):
         #验证正确性
         u_userid = Blog.objects.get(blog_id=blogid).user_id
         if (u_userid != c_userid):
-            return HttpResponseRedirect('blogApp/error.html')
+            return HttpResponseRedirect('/error')
 
         #从数据库中读取原来的博客题目内容分类等
         catset1 = Category.objects.filter(user_id=c_userid)
@@ -334,7 +334,7 @@ def manage(req,username):
     catetofil = req.POST.get('catetofil', None)
     useridsalt = req.COOKIES.get('userid', None)
     if (useridsalt == None):
-        return HttpResponseRedirect('blogApp/error.html')
+        return HttpResponseRedirect('/error')
     c_userid = Cookie.objects.get(cookie__exact=useridsalt).user_id
     u_userid = User.objects.get(name__exact=username).user_id
     if (c_userid == u_userid ):
@@ -397,7 +397,7 @@ def manage(req,username):
         #利用reblogset自动生成表单
 
     else:
-        return HttpResponseRedirect('blogApp/error.html')
+        return HttpResponseRedirect('/error')
 
 #to do
 def download(req,username):
@@ -425,11 +425,7 @@ def editInfo(req, username):
         return render(req, 'blogApp/editInfo.html',
                       {'user':user,'currentUser':currentUser, "follow_num": follow_num, "followed_num": followed_num})
     else:
-        return HttpResponseRedirect('blogApp/error.html')
-
-
-
-
+        return HttpResponseRedirect('/error')
 
 #提交个人信息
 def submit(req,username):
@@ -661,7 +657,7 @@ def personalIndex(request, username):
             return render(request, 'blogApp/personalIndex.html', context)
         # 将当前页页码，以及当前页数据传递到index.html
     else:
-        return HttpResponseRedirect('blogApp/error.html')
+        return HttpResponseRedirect('/error')
 
 
 def get_user_id(user_name):
@@ -920,7 +916,7 @@ def getUserByCOOKIE(cook):
 def notify(req,username):
     useridsalt = req.COOKIES.get('userid', None)
     if (useridsalt == None):
-        return HttpResponseRedirect('blogApp/error.html')
+        return HttpResponseRedirect('/error')
     currentUser = Cookie.objects.get(cookie__exact=useridsalt).user
     c_userid = currentUser.user_id
 
@@ -939,12 +935,12 @@ def notify(req,username):
 
         return render(req,'blogApp/notification.html',dic)
     else:
-        return HttpResponseRedirect('blogApp/error.html')
+        return HttpResponseRedirect('/error')
 
 def follow(req,username):
     useridsalt = req.COOKIES.get('userid', None)
     if (useridsalt == None):#没有cookie
-        return HttpResponseRedirect('blogApp/error.html')
+        return HttpResponseRedirect('/error')
     currentUser = Cookie.objects.get(cookie__exact=useridsalt).user
     c_userid = currentUser.user_id
 
@@ -968,12 +964,12 @@ def follow(req,username):
         dic['followList'] = follow
         return render(req, 'blogApp/follow.html', dic)
     else:
-        return HttpResponseRedirect('blogApp/error.html')
+        return HttpResponseRedirect('/error')
 
 def favourite(req,username):
     useridsalt = req.COOKIES.get('userid', None)
     if (useridsalt == None):#没有cookie
-        return HttpResponseRedirect('blogApp/error.html')
+        return HttpResponseRedirect('/error')
     currentUser = Cookie.objects.get(cookie__exact=useridsalt).user
     c_userid = currentUser.user_id
 
@@ -996,4 +992,7 @@ def favourite(req,username):
         print(dic)
         return render(req, 'blogApp/favourite.html', dic)
     else:
-        return HttpResponseRedirect('blogApp/error.html')
+        return HttpResponseRedirect('/error')
+
+def error(req):
+    return render(req, "blogApp/error.html")

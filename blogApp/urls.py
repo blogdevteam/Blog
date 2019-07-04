@@ -26,6 +26,8 @@ urlpatterns = [
 
     path('follow/<slug:username>/', views.follow, name = 'notify'),
     path('favourite/<slug:username>/', views.favourite, name = 'notify'),
+    
+    path('error/', views.error, name = 'error'),
     # path('manage/<string:username>', views.manage, name = 'manage'),
     # path('edit/<string:username>', views.edit, name = 'edit'),
     # path('info/<string:username>', views.info, name = 'edit'),
