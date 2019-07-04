@@ -168,25 +168,26 @@ def search(req):
     if('keywords' in req.GET and req.GET['keywords'] == ''):
         return HttpResponse('请输入关键词')
 
-    dic['keywords'] = []
+    
     if ('keywords' in req.GET and not req.GET['keywords'] == ''):
         queryList = queryList.filter( 
             reduce( lambda x, y: x & y, map( 
                 lambda x: (Q(title__icontains = x) | Q(title__icontains = x)) , req.GET['keywords'].split(' '))
             )
         )
-        dic['keywords'].append(req.GET['keywords'])
+        dic['keywords'] = req.GET['keywords']
 
     if ('categoryid' in req.GET and not req.GET['categoryid'] == ''):
         queryList = queryList.filter(category_id = req.GET['categoryid'])
-        dic['categoryid'] = req.GET['category_id']
+        dic['category'] = Category.objects.get(category_id = req.GET['category_id'])
     
     if ('userid' in req.GET and not req.GET['userid'] == ''):
         queryList = queryList.filter(user_id = req.GET['userid'])
-        dic['userid'] = req.GET['userid']
+        dic['user'] = User.objects.get(user_id = req.GET['userid'])
 
     if ('tagid' in req.GET and not req.GET['tagid'] == ''):
-        queryList = queryList.filter(tag_id = req.GET['tagid'])
+        queryList = queryList.filter(blogtag__tag__tag_id__contains = req.GET['tagid'])
+        dic['tag'] = Tag.objects.get(tag_id = req.GET['tagid'])
 
     cock = req.COOKIES.get('userid', None)
     if (cock != None):

@@ -51,7 +51,7 @@ rightbar:
             <!--category-->
             {% for category in categoryList %}
             <li>
-                <a href="/search?userid={{user.userid}}&category={{category.cate_id}}"> {{category.cate_name}} </a>
+                <a href="/search?userid={{user.user_id}}&category={{category.cate_id}}"> {{category.cate_name}} </a>
             </li>
             {% endfor %}
         </ol>
