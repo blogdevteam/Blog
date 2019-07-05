@@ -17,8 +17,8 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li><a href="/index">主页</a></li>
-                <li><a href="/personalIndex/{{currentUser.name}}">我的博客</a></li>
-                <li><a href="/manage/{{currentUser.name}}">管理博客</a></li>
+                <li><a href="{% if currentUser == None %} /error {% else %} /personalIndex/{{currentUser.name}} {% endif %}">我的博客</a></li>
+                <li><a href="{% if currentUser == None %} /error {% else %} /manage/{{currentUser.name}} {% endif %}">管理博客</a></li>
                 <li><a href="/edit/0">新建博客</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
